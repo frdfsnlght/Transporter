@@ -1,0 +1,114 @@
+
+Ideas:
+* Deposit accounts for the money collected when building/creating/linking/using gates.
+* Implement gate permissions when Permissions plugin supports adding a gate to a group.
+* Per-world inventories?
+* Add API options like allow*
+
+Another proxy? http://forums.spout.org/threads/smproxy-a-minecraft-1-2-3-server-proxy.1755/
+
+TODO:
+* Add world gates that only accept arrivals and no outbound links. Lets server place player in the world?
+* Add commands to extract part of a world into a design file.
+* Add feedback output when server connect command is given (http://dev.bukkit.org/server-mods/transporter/?comment=1012).
+
+
+
+Testing:
+* Test stairs with facing option
+
+Wiki Updates:
+
+Changelog:
+* Updated for CB 1.4.7-R1.0.
+* Updated to handle newer versions of BungeeCord.
+* Gate banning * will now allow empty inventory slots.
+
+
+
+
+
+
+
+
+Old wiki:
+
+----
+
+==Scenario 4==
+{{http://dev.bukkit.org/media/images/34/355/ServerToServer-4.png|}}
+
+This scenario adds more complexity by mixing a public server and a private cluster behind a Minecraft proxy server such as [[http://forums.bukkit.org/threads/15479|CraftProxy]]. Additionally, it is assumed the Proxy, Server1, and Server2 are all hosted on the same box. This scenario still requires the [[ClientPatcher]] (or the BukkitContrib, or Spout client) to be installed, but only for teleportation from Server1 to any of the servers behind the proxy (Server2 and Server3).
+
+**Note: CraftProxy is a separate piece of software, distinct from the Transporter plugin. It runs as a plugin in one of the Minecraft servers it proxies for. It's beyond the scope of these instructions to help you configuire CraftProxy, and it is assumes you know how to use and configure that software before you attempt to configure this plugin to work with it.**
+
+===Server1===
+ * IP address: 200.10.20.30
+ * Minecraft port: 25565 (default)
+ * Transporter plugin port: 25555 (default)
+ * Transporter plugin key: server1Key
+
+===Server2===
+ * IP address: 192.168.0.2
+ * Minecraft port: 25566 (non-default)
+ * Transporter plugin port: 25556 (non-default)
+ * Transporter plugin key: server2Key
+
+===Server3===
+ * IP address: 192.168.0.2
+ * Minecraft port: 25567 (non-default)
+ * Transporter plugin port: 25557 (non-default)
+ * Transporter plugin key: server3Key
+
+===Proxy===
+ * IP address: 192.168.0.2
+ * listen_hostname_port: 25565 (default MC port)
+ * default_server: localhost:25566
+
+===Firewall===
+ * Public IP address: 200.10.30.40
+ * Private IP address: 192.168.0.1
+ * Forward port 25565 to 192.168.0.2 (for client connections to the proxy)
+ * Forward port 25556 to 192.168.0.2 (for Transporter plugin connections to Server1)
+ * Forward port 25557 to 192.168.0.2 (for Transporter plugin connections to Server2)
+
+===Player1===
+ * IP address: 210.0.0.10
+
+===Player2===
+ * IP address: 192.168.0.5
+
+On Server1, enter the following commands in the server console:
+{{{
+trp network set key server1Key
+trp server add server2 200.10.30.40:25556 server2Key
+trp server add server3 200.10.30.40:25557 server3Key
+}}}
+
+These commands are similar to the commands for Server1 in scenario 1 except that we've specified an explicit port number with the IP address of Server2, and we've added Server3. This is necessary because we're not running the plugins behind the firewall and proxy on the default port. Also note we forwarded the ports through the firewall. While we've added the configuration for Server3, there is currently no way for an outside player like Player1 to connect to Server3 in this situation because Player1's Minecraft client has no way to tell the proxy to connect to Server3. From the outside, only a connection to the proxy's default server can be made. However, by adding Server3, things like player joins/quits and chat can be relayed.
+
+On Server2, enter the following commands:
+{{{
+trp network set listenAddress *:25556
+trp network set key server2Key
+trp server add server1 200.10.20.30 server1Key
+trp server add server3 localhost:25557 server3Key
+}}}
+
+On Server3, enter the following commands:
+{{{
+trp network set listenAddress *:25557
+trp network set key server3Key
+trp server add server1 200.10.20.30 server1Key
+trp server add server2 localhost:25556 server2Key
+}}}
+
+After running all these commands on the various servers, you should see all the configured servers connect to each other. You can verify this by using the **trp server list** command and examining the output.
+
+When using CraftProxy in this confguration, there is a problem: if Player1 teleports from Server1 to Server2, they are effectively "trapped" behind the proxy. This means that if they then teleport back to Server1, their network connection actually looks like: Player1 -> Proxy -> Server1. This consumes twice the bandwidth on the connection between the proxy and the Internet. It's possible to fix this problem and there are ongoing discussions with the author of CraftProxy about how best to resolve this, so a future version of both Transporter and CraftProxy may fix this.
+
+And here's some tips from Anton8604 that may be of some help with CraftProxy:
+
+CraftProxy still works [as of July 30, 2012] as a means of bypassing the client patch. You only need the public address to be "*:[whatever port the proxy is listening on]", and of course log in to that port when you first join the server. Furthermore, online-mode must be set to "false" in server.properties, and have CraftProxy do the authentication.. Although authentication via CraftProxy in my experience was so slow that Transporter reservations would expire before the player could log in. Although it could've been my bandwidth, as I tested this all from home.
+
+

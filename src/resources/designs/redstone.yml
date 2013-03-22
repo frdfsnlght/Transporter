@@ -1,0 +1,29 @@
+name: Redstone
+duration: -1
+buildable: true
+buildFromInventory: false
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: NONE
+  O: STONE
+  o: { build: STONE, open: GLOWSTONE }
+  A: { build: AIR, portal: true, spawn: FORWARD }
+  a: { build: AIR, portal: true, spawn: FORWARD, insert: true }
+  s: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true }
+  T: { build: REDSTONE_WIRE, trigger: true }
+  S: { build: REDSTONE_WIRE, switch: true }
+  
+
+blocks:
+  -
+    - "ToaAoS"
+    - "OOOOOO"
+  -
+    - "XsXXsX"
+    - "XXXXXX"

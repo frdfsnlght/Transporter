@@ -1,0 +1,7 @@
+version=1.3.2
+
+# New files - CRC
+new.1=Transporter.class,0x8d18deb8
+
+# Replace files - New CRC, Original CRC
+replace.1=ata.class,0x673e1730,0xebfddc06

@@ -1,0 +1,30 @@
+name: Small
+duration: -1
+buildable: true
+buildFromInventory:
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: NONE
+  O: OBSIDIAN
+  P: { build: AIR, open: STATIONARY_WATER, portal: true  }
+  p: { build: AIR, open: STATIONARY_WATER, portal: true, spawn: REVERSE, insert: true }
+  S: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true, trigger: true, switch: true }
+  E: { build: { type: WALL_SIGN, facing: EAST }, screen: true, trigger: true, switch: true }
+
+blocks:
+  -
+    - "OE"
+    - "PX"
+    - "pX"
+    - "OX"
+  -
+    - "SX"
+    - "XX"
+    - "XX"
+    - "XX"

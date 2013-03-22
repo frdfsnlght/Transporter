@@ -1,0 +1,36 @@
+name: Minecart
+duration: -1
+buildable: true
+buildFromInventory: false
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: NONE
+  O: { build: OBSIDIAN, open: GLOWSTONE }
+  o: { build: OBSIDIAN }
+  P: { build: AIR, portal: true  }
+  p: { build: RAILS, portal: true, spawn: FORWARD, insert: true }
+  S: { build: { type: WALL_SIGN, facing: NORTH }, screen: true, trigger: true, switch: true }
+  s: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true, trigger: true, switch: true }
+
+blocks:
+  -
+    - "XSX"
+    - "XXX"
+    - "XXX"
+    - "XXX"
+  -
+    - "OOO"
+    - "OPO"
+    - "OpO"
+    - "OoO"
+  -
+    - "XsX"
+    - "XXX"
+    - "XXX"
+    - "XXX"

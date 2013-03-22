@@ -1,0 +1,36 @@
+name: Pad
+duration: 10000
+buildable: true
+buildFromInventory: false
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: AIR
+  B: STONE
+  P: { build: STONE, open: GLOWSTONE }
+  O: { build: AIR, open: AIR, portal: true, spawn: PLAYER }
+  o: { build: AIR, open: AIR }
+  S: { build: { type: SIGN_POST, facing: SOUTH_WEST }, screen: true, trigger: true, switch: true, insert: true }
+
+blocks:
+  -
+    - "XXXX"
+    - "XXXX"
+    - "BBBB"
+  -
+    - "XooX"
+    - "XOOX"
+    - "BPPB"
+  -
+    - "XooX"
+    - "XOOX"
+    - "BPPB"
+  -
+    - "XXXX"
+    - "SXXX"
+    - "BBBB"

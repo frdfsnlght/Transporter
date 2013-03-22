@@ -1,0 +1,35 @@
+name: Booth
+duration: -1
+buildable: true
+buildFromInventory:
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: NONE
+  O: OBSIDIAN
+  G: { build: OBSIDIAN, open: GLOWSTONE }
+  P: { build: AIR, open: AIR, portal: true  }
+  p: { build: AIR, open: AIR, portal: true, spawn: REVERSE, insert: true }
+  S: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true, trigger: true, switch: true }
+
+blocks:
+  -
+    - "O"
+    - "G"
+    - "G"
+    - "O"
+  -
+    - "O"
+    - "P"
+    - "p"
+    - "O"
+  -
+    - "S"
+    - "X"
+    - "X"
+    - "X"

@@ -1,0 +1,19 @@
+
+.infoWindow.gateInfo {
+    height: auto;
+}
+
+.infoWindow.gateInfo img {
+    width: 32px;
+    float: left;
+    margin-right: 10px;
+}
+
+.infoWindow.gateInfo > p {
+    float: left;
+    font-family: Arial,sans-serif;
+    font-size: 12px;
+    text-align: left;
+    margin-top: 0;
+}
+

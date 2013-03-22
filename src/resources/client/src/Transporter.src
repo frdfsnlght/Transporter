@@ -1,0 +1,63 @@
+/*
+ * Copyright 2011 frdfsnlght <frdfsnlght@gmail.com>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.minecraft.src;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import net.minecraft.client.Minecraft;
+
+/**
+ *
+ * @author frdfsnlght <frdfsnlght@gmail.com>
+ */
+public final class Transporter {
+
+    private static String host = null;
+    private static int port = -1;
+    private static final Pattern pattern = Pattern.compile("^\\[([^\\]]+)\\][^:]+:\\s*([a-zA-Z0-9\\-\\.]+):?(\\d+)?");
+
+    static public void detectKick(String s, String s1, Object[] aobj ) {
+        port = -1;
+
+        if ((s == null) || (aobj == null) || (aobj.length == 0) || (! (aobj[0] instanceof String))) return;
+        String reason = (String)aobj[0];
+        System.out.println("message: " + reason);
+        Matcher match = pattern.matcher(reason);
+        if (! match.matches()) return;
+
+        host = match.group(2);
+        String portStr = match.group(3);
+        if ((portStr != null) && (portStr.length() > 0)) {
+            try {
+                port = Integer.parseInt(match.group(3));
+            } catch (NumberFormatException e) {
+                host = null;
+                return;
+            }
+        } else
+            port = 25565;
+
+        System.out.println("[Transporter] detected reconnect for '" + match.group(1) + "' to " + host + ":" + port);
+    }
+
+    static public void teleportIfKicked(Minecraft client) {
+        if ((port == -1) || (host == null)) return;
+        System.out.println("[Transporter] reconnecting...");
+        client.displayGuiScreen(new GuiConnecting(client, host, port));
+    }
+
+}

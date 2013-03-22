@@ -1,0 +1,7 @@
+version=1.4.6
+
+# New files - CRC
+new.1=Transporter.class,0x3a16cca2
+
+# Replace files - New CRC, Original CRC
+replace.1=aym.class,0x6daa5c7e,0xc7e290d2

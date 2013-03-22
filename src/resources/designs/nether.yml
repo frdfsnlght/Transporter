@@ -1,0 +1,36 @@
+name: Nether              # must be unique on the server
+duration: -1              # millis until gate closes, -1 means always on
+buildable: true           # can a user build the gate automatically?
+buildFromInventory: false # when building the gate, take the blocks from the user's inventory?
+buildWorlds: .*           # list of world name patterns where this gate can be built and created
+linkLocal: true           # can be linked to another gate in same world?
+linkWorld: true           # can be linked to another gate in a world on the same server?
+linkServer: true          # can be linked to another gate on a different server?
+multiLink: true           # can be linked to multiple gates?
+restoreOnClose: false     # restore open blocks when closing the gate?
+requirePin: false         # does the gate require a valid player pin for use?
+requireValidPin: true     # will the gate allow reception of an invalid pin?
+invalidPinDamage: 10      # how much damage does reception of an invalid pin do?
+requireAllowedItems: true # don't allow reception of banned items
+
+blockKey:
+  X: NONE
+  O: OBSIDIAN
+  P: { build: AIR, open: STATIONARY_WATER, portal: true  }
+  p: { build: AIR, open: STATIONARY_WATER, portal: true, spawn: FORWARD }
+  I: { build: AIR, open: STATIONARY_WATER, portal: true, spawn: FORWARD, insert: true }
+  S: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true, trigger: true, switch: true }
+
+blocks:
+  -
+    - "OOOO"
+    - "OPPO"
+    - "OPPO"
+    - "OIpO"
+    - "OOOO"
+  -
+    - "XXXX"
+    - "XXXX"
+    - "SXXX"
+    - "XXXX"
+    - "XXXX"

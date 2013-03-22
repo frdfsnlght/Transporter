@@ -1,0 +1,62 @@
+name: Stargate
+duration: 10000
+buildable: true
+buildFromInventory: false
+buildWorlds: .*
+linkLocal: true
+linkWorld: true
+linkServer: true
+multiLink: true
+restoreOnClose: false
+
+blockKey:
+  X: NONE
+  O: OBSIDIAN
+  G: { build: OBSIDIAN, open: GLOWSTONE }
+  o: STEP
+  P: { build: AIR, open: STATIONARY_WATER, portal: true  }
+  p: { build: AIR, open: STATIONARY_WATER, portal: true, spawn: SOUTH }
+  I: { insert: true }
+  S: { build: { type: WALL_SIGN, facing: SOUTH }, screen: true, trigger: true, switch: true }
+
+blocks:
+  -
+    - "XXOGOXX"
+    - "XGPPPGX"
+    - "OPPPPPO"
+    - "GPPPPPG"
+    - "OPPPPPO"
+    - "XGpppGX"
+    - "XXOGOXX"
+  -
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXoooXX"
+  -
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXIXXX"
+  -
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXOX"
+    - "XXXXXOX"
+  -
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXXX"
+    - "XXXXXSX"
+    - "XXXXXXX"
