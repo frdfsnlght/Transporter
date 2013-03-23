@@ -16,46 +16,38 @@
 package com.frdfsnlght.transporter.compatibility;
 
 import com.frdfsnlght.transporter.Global;
-import com.frdfsnlght.transporter.TypeMap;
 import com.frdfsnlght.transporter.Utils;
+import com.frdfsnlght.transporter.compatibility.api.CompatibilityProvider;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import java.lang.reflect.Constructor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
  */
-public abstract class Compatibility {
+
+public class Compatibility {
 
     public static boolean setup() {
-        String p = Global.plugin.getServer().getClass().getPackage().getName();
-        String version = p.substring(p.lastIndexOf('.') + 1);
-        try {
-            String classname = null;
-            if (version.contains("craftbukkit"))
-                classname = Compatibility.class.getPackage().getName() + ".vPreClass";
-            else
-                classname = Compatibility.class.getPackage().getName() + ".v" + version.substring(1) + "Class";
-            Utils.info("loading compatibility class %s", classname);
-            Class<?> cls = Class.forName(classname);
-            Constructor<?> cons = cls.getDeclaredConstructor();
-            Object obj = cons.newInstance();
-            if (obj instanceof Compatibility) {
-                Global.compatibility = (Compatibility)obj;
-                return true;
-            }
-        } catch (ClassNotFoundException e) {
-            Utils.severe("compatibility class not found");
-        } catch (Exception e) {
+        final String packageName = Global.plugin.getServer().getClass().getPackage().getName();
+        String cbversion = packageName.substring(packageName.lastIndexOf('.') + 1);
+        if (cbversion.equals("craftbukkit")) {
+            cbversion = "pre";
         }
-        return false;
+        try {
+            final Class<?> clazz = Class.forName("com.frdfsnlght.transporter.compatibility.v" + cbversion);
+            if (Compatibility.class.isAssignableFrom(clazz)) {
+            	Global.compatibility = (CompatibilityProvider) clazz.getConstructor().newInstance();
+            } else {
+                throw new Exception("Nope");
+            }
+        } catch (final Exception e) {
+        	Global.plugin.getLogger().severe("Could not find support for this CraftBukkit version.");
+            return false;
+        }
+        Global.plugin.getLogger().info("Loading support for " + (cbversion.equals("pre") ? "1.4.5-pre-RB" : cbversion));
+        return true;
     }
-
-    abstract public void sendAllPacket201PlayerInfo(String playerName, boolean b, int i);
-    abstract public void sendPlayerPacket201PlayerInfo(Player player, String playerName, boolean b, int i);
-    abstract public ItemStack createItemStack(int type, int amount, short durability);
-    abstract public TypeMap getItemStackTag(ItemStack stack);
-    abstract public ItemStack setItemStackTag(ItemStack stack, TypeMap tag);
-
 }
+

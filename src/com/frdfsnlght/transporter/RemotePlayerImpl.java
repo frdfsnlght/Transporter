@@ -21,6 +21,8 @@ import com.frdfsnlght.transporter.api.RemoteLocation;
 import com.frdfsnlght.transporter.api.RemotePlayer;
 import com.frdfsnlght.transporter.api.RemoteServer;
 import com.frdfsnlght.transporter.api.RemoteWorld;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import org.bukkit.entity.Player;
 
 /**

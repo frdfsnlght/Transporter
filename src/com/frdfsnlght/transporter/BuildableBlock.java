@@ -30,6 +30,8 @@ import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>

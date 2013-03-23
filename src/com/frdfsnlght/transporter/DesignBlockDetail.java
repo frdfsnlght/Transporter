@@ -16,6 +16,8 @@
 package com.frdfsnlght.transporter;
 
 import com.frdfsnlght.transporter.api.SpawnDirection;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Material;

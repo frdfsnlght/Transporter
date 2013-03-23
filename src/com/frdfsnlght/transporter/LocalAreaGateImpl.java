@@ -29,6 +29,8 @@ import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.LocalAreaGate;
 import com.frdfsnlght.transporter.api.SpawnDirection;
 import com.frdfsnlght.transporter.api.SpawnSearch;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

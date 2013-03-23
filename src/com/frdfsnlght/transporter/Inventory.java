@@ -26,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>

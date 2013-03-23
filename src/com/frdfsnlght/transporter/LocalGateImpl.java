@@ -20,6 +20,8 @@ import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.LocalGate;
 import com.frdfsnlght.transporter.api.TransporterException;
 import com.frdfsnlght.transporter.command.CommandException;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;

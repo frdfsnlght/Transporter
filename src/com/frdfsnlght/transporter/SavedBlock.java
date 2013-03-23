@@ -19,6 +19,8 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>

@@ -20,6 +20,8 @@ import com.frdfsnlght.transporter.GateMap.Volume;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.LocalBlockGate;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

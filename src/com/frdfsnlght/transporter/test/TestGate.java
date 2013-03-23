@@ -21,9 +21,10 @@ import java.util.Set;
 import com.frdfsnlght.transporter.GateMap.Point;
 import com.frdfsnlght.transporter.GateMap.Volume;
 import com.frdfsnlght.transporter.LocalGateImpl;
-import com.frdfsnlght.transporter.TypeMap;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.GateType;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;

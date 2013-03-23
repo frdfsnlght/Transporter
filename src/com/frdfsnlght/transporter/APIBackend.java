@@ -18,8 +18,11 @@ package com.frdfsnlght.transporter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import com.frdfsnlght.transporter.api.RemoteException;
 import com.frdfsnlght.transporter.api.TransporterException;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;

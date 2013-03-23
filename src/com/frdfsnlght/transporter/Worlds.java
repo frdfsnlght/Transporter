@@ -23,6 +23,8 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>

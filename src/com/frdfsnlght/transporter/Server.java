@@ -35,6 +35,7 @@ import com.frdfsnlght.transporter.api.event.RemotePlayerKickEvent;
 import com.frdfsnlght.transporter.api.event.RemotePlayerQuitEvent;
 import com.frdfsnlght.transporter.api.event.RemoteServerConnectEvent;
 import com.frdfsnlght.transporter.api.event.RemoteServerDisconnectEvent;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 import com.frdfsnlght.transporter.net.Connection;
 import com.frdfsnlght.transporter.net.Network;
 import java.lang.reflect.Method;

@@ -15,46 +15,48 @@
  */
 package com.frdfsnlght.transporter.compatibility;
 
-import com.frdfsnlght.transporter.Global;
-import com.frdfsnlght.transporter.TypeMap;
+import com.frdfsnlght.transporter.compatibility.api.*;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.server.v1_5_R2.NBTBase;
-import net.minecraft.server.v1_5_R2.NBTTagByte;
-import net.minecraft.server.v1_5_R2.NBTTagCompound;
-import net.minecraft.server.v1_5_R2.NBTTagDouble;
-import net.minecraft.server.v1_5_R2.NBTTagFloat;
-import net.minecraft.server.v1_5_R2.NBTTagInt;
-import net.minecraft.server.v1_5_R2.NBTTagList;
-import net.minecraft.server.v1_5_R2.NBTTagLong;
-import net.minecraft.server.v1_5_R2.NBTTagShort;
-import net.minecraft.server.v1_5_R2.NBTTagString;
-import net.minecraft.server.v1_5_R2.Packet201PlayerInfo;
-import net.minecraft.server.v1_5_R2.PlayerConnection;
-import org.bukkit.craftbukkit.v1_5_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_4_5.NBTBase;
+import net.minecraft.server.v1_4_5.NBTTagByte;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagDouble;
+import net.minecraft.server.v1_4_5.NBTTagFloat;
+import net.minecraft.server.v1_4_5.NBTTagInt;
+import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTTagLong;
+import net.minecraft.server.v1_4_5.NBTTagShort;
+import net.minecraft.server.v1_4_5.NBTTagString;
+import net.minecraft.server.v1_4_5.NetServerHandler;
+import net.minecraft.server.v1_4_5.Packet201PlayerInfo;
+import org.bukkit.craftbukkit.v1_4_5.CraftServer;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
  */
-public class v1_5_R2Class extends Compatibility {
+public class v1_4_5 implements CompatibilityProvider {
 
     @Override
     public void sendAllPacket201PlayerInfo(String playerName, boolean b, int i) {
-        ((CraftServer)Global.plugin.getServer()).getHandle().sendAll(new Packet201PlayerInfo(playerName, b, i));
+		Plugin plugin = Bukkit.getPluginManager().getPlugin("Transporter");
+        ((CraftServer)plugin.getServer()).getHandle().sendAll(new Packet201PlayerInfo(playerName, b, i));
     }
 
     @Override
     public void sendPlayerPacket201PlayerInfo(Player player, String playerName, boolean b, int i) {
-        PlayerConnection pc = ((CraftPlayer)player).getHandle().playerConnection;
-        if (pc != null)
-            pc.sendPacket(new Packet201PlayerInfo(playerName, true, 9999));
+        NetServerHandler nsh = ((CraftPlayer)player).getHandle().netServerHandler;
+        if (nsh != null)
+            nsh.sendPacket(new Packet201PlayerInfo(playerName, true, 9999));
     }
 
     @Override
@@ -64,14 +66,14 @@ public class v1_5_R2Class extends Compatibility {
 
     @Override
     public TypeMap getItemStackTag(ItemStack stack) {
-        net.minecraft.server.v1_5_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
+        net.minecraft.server.v1_4_5.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
         if (nmsStack == null) return null;
         return (TypeMap)encodeNBT(nmsStack.getTag());
     }
 
     @Override
     public ItemStack setItemStackTag(ItemStack stack, TypeMap tag) {
-        net.minecraft.server.v1_5_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
+        net.minecraft.server.v1_4_5.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
         if (nmsStack == null) return stack;
         nmsStack.setTag(decodeNBT(tag));
         return CraftItemStack.asCraftMirror(nmsStack);

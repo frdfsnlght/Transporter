@@ -15,6 +15,7 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 import com.frdfsnlght.transporter.net.Network;
 import java.io.File;
 import java.net.Proxy;

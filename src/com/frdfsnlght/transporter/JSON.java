@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>

@@ -21,6 +21,8 @@ import com.frdfsnlght.transporter.api.Reservation;
 import com.frdfsnlght.transporter.api.ReservationException;
 import com.frdfsnlght.transporter.api.event.EntityArriveEvent;
 import com.frdfsnlght.transporter.api.event.EntityDepartEvent;
+import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
