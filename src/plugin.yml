@@ -6,6 +6,7 @@ authors:
 website: http://dev.bukkit.org/server-mods/transporter/
 description: >
   Provides teleportation through gates between worlds and servers.
+depends: [TabAPI]
 softdepend: [Vault, Inquisitor, Permissions, PermissionsEx, Register, Dynmap]
 commands:
   trp:
