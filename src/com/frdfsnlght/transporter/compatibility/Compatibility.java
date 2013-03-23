@@ -29,17 +29,19 @@ public class Compatibility {
         final String packageName = Global.plugin.getServer().getClass().getPackage().getName();
         String cbversion = packageName.substring(packageName.lastIndexOf('.') + 1);
         if (cbversion.equals("craftbukkit")) {
-            cbversion = "pre";
+            cbversion = "vpre";
         }
+        String className = "com.frdfsnlght.transporter.compatibility.CompatibilityProvider_" + cbversion;
         try {
-            final Class<?> clazz = Class.forName("com.frdfsnlght.transporter.compatibility.v" + cbversion);
-            if (Compatibility.class.isAssignableFrom(clazz)) {
+            final Class<?> clazz = Class.forName(className);
+            if (CompatibilityProvider.class.isAssignableFrom(clazz)) {
             	Global.compatibility = (CompatibilityProvider) clazz.getConstructor().newInstance();
             } else {
-                throw new Exception("Nope");
+                throw new Exception("Nope : " + clazz);
             }
         } catch (final Exception e) {
-        	Global.plugin.getLogger().severe("Could not find support for this CraftBukkit version.");
+        	Global.plugin.getLogger().severe("Could not find support for this CraftBukkit version (" + cbversion + ") : " + className);
+        	e.printStackTrace();
             return false;
         }
         Global.plugin.getLogger().info("Loading support for " + (cbversion.equals("pre") ? "1.4.5-pre-RB" : cbversion));

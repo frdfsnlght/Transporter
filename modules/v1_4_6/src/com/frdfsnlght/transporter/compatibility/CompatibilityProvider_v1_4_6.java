@@ -45,7 +45,7 @@ import org.bukkit.plugin.Plugin;
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
  */
-public class v1_4_6 implements CompatibilityProvider {
+public class CompatibilityProvider_v1_4_6 implements CompatibilityProvider {
 
     @Override
     public void sendAllPacket201PlayerInfo(String playerName, boolean b, int i) {

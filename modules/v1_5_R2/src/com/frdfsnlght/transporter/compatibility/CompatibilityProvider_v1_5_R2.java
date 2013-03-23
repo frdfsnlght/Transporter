@@ -18,36 +18,35 @@ package com.frdfsnlght.transporter.compatibility;
 import com.frdfsnlght.transporter.compatibility.api.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.server.NBTBase;
-import net.minecraft.server.NBTTagByte;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagDouble;
-import net.minecraft.server.NBTTagFloat;
-import net.minecraft.server.NBTTagInt;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagLong;
-import net.minecraft.server.NBTTagShort;
-import net.minecraft.server.NBTTagString;
-import net.minecraft.server.NetServerHandler;
-import net.minecraft.server.Packet201PlayerInfo;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import net.minecraft.server.v1_5_R2.NBTBase;
+import net.minecraft.server.v1_5_R2.NBTTagByte;
+import net.minecraft.server.v1_5_R2.NBTTagCompound;
+import net.minecraft.server.v1_5_R2.NBTTagDouble;
+import net.minecraft.server.v1_5_R2.NBTTagFloat;
+import net.minecraft.server.v1_5_R2.NBTTagInt;
+import net.minecraft.server.v1_5_R2.NBTTagList;
+import net.minecraft.server.v1_5_R2.NBTTagLong;
+import net.minecraft.server.v1_5_R2.NBTTagShort;
+import net.minecraft.server.v1_5_R2.NBTTagString;
+import net.minecraft.server.v1_5_R2.Packet201PlayerInfo;
+import net.minecraft.server.v1_5_R2.PlayerConnection;
+
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_5_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
  */
-public class vpre implements CompatibilityProvider {
+public class CompatibilityProvider_v1_5_R2 implements CompatibilityProvider {
 
     @Override
     public void sendAllPacket201PlayerInfo(String playerName, boolean b, int i) {
@@ -57,30 +56,29 @@ public class vpre implements CompatibilityProvider {
 
     @Override
     public void sendPlayerPacket201PlayerInfo(Player player, String playerName, boolean b, int i) {
-        NetServerHandler nsh = ((CraftPlayer)player).getHandle().netServerHandler;
-        if (nsh != null)
-            nsh.sendPacket(new Packet201PlayerInfo(playerName, true, 9999));
+        PlayerConnection pc = ((CraftPlayer)player).getHandle().playerConnection;
+        if (pc != null)
+            pc.sendPacket(new Packet201PlayerInfo(playerName, true, 9999));
     }
 
     @Override
     public ItemStack createItemStack(int type, int amount, short durability) {
-        return new CraftItemStack(type, amount, durability);
+        return new ItemStack(type, amount, durability);
     }
 
     @Override
     public TypeMap getItemStackTag(ItemStack stack) {
-        net.minecraft.server.ItemStack mcStack = (net.minecraft.server.ItemStack)((CraftItemStack)stack).getHandle();
-        if (mcStack == null) return null;
-
-        return (TypeMap)encodeNBT(mcStack.getTag());
+        net.minecraft.server.v1_5_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
+        if (nmsStack == null) return null;
+        return (TypeMap)encodeNBT(nmsStack.getTag());
     }
 
     @Override
     public ItemStack setItemStackTag(ItemStack stack, TypeMap tag) {
-        net.minecraft.server.ItemStack nmsStack = (net.minecraft.server.ItemStack)((CraftItemStack)stack).getHandle();
+        net.minecraft.server.v1_5_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
         if (nmsStack == null) return stack;
         nmsStack.setTag(decodeNBT(tag));
-        return stack;
+        return CraftItemStack.asCraftMirror(nmsStack);
     }
 
 
@@ -88,14 +86,9 @@ public class vpre implements CompatibilityProvider {
 
     private TypeMap encodeNBT(NBTTagCompound tag) {
         if (tag == null) return null;
-        Method method = getCollectionMethod();
 
         TypeMap map = new TypeMap();
-        Collection col = null;
-        try {
-            col = (Collection)method.invoke(tag, new Object[] {});
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {}
+        Collection col = tag.c();
 
         for (Object object : col) {
             if (object instanceof NBTBase) {
@@ -107,25 +100,6 @@ public class vpre implements CompatibilityProvider {
             }
         }
         return map;
-    }
-
-    private Method NBTTCCollection = null;
-
-    private Method getCollectionMethod() {
-        if (NBTTCCollection != null) return NBTTCCollection;
-        for (Method method : NBTTagCompound.class.getMethods()) {
-            if (method.getParameterTypes().length != 0) {
-                continue;
-            }
-            if (method.getReturnType() != Collection.class) {
-                continue;
-            }
-            if (NBTTCCollection == null)
-                NBTTCCollection = method;
-        }
-        if (NBTTCCollection == null)
-            throw new UnsupportedOperationException("Unable to find collection method in NBTTagCompound!!!");
-        return NBTTCCollection;
     }
 
     private Object encodeNBTValue(NBTBase tag) {
