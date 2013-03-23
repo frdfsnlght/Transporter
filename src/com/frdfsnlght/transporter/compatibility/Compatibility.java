@@ -16,11 +16,7 @@
 package com.frdfsnlght.transporter.compatibility;
 
 import com.frdfsnlght.transporter.Global;
-import com.frdfsnlght.transporter.Utils;
 import com.frdfsnlght.transporter.compatibility.api.CompatibilityProvider;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
-import java.lang.reflect.Constructor;
 
 /**
  *
