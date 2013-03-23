@@ -444,38 +444,42 @@ public final class PlayerListenerImpl implements Listener {
 		int a = 0;
 		int b = 0;
 		
-		setTabString( p, a, 0, "§9§l----------" + TabAPI.nextNull(), 9999);
-		setTabString( p, a, 1, "§9§lServerliste", 9999);
-		setTabString( p, a, 2, "§9§l----------" + TabAPI.nextNull(), 9999);
-		a++;
+		if (Config.getShowServerlist()) {
 
-		setTabString( p, a, 0, "§9Lokal [" + Global.plugin.getServer().getOnlinePlayers().length + "]", 0);
-		b++;
+			setTabString( p, a, 0, "§9§l----------" + TabAPI.nextNull(), 9999);
+			setTabString( p, a, 1, "§9§lServerlist", 9999);
+			setTabString( p, a, 2, "§9§l----------" + TabAPI.nextNull(), 9999);
+			a++;
 
-		for (RemoteServer rServer : Global.plugin.getAPI().getRemoteServers()) {
-			boolean isConnected = rServer.isConnected();
-			
-			String rsName = rServer.getName();
-			String rsPlayers = isConnected ? Integer.toString(rServer.getRemotePlayers().size()) : "";
-			
-			if (rsName.length() + rsPlayers.length() + (isConnected ? 3 : 0) > 13) {
-				rsName = rsName.substring(0, (isConnected ? 7 - rsPlayers.length() : 10)) + "...";
+			setTabString( p, a, 0, "§9Local [" + Global.plugin.getServer().getOnlinePlayers().length + "]", 0);
+			b++;
+
+			for (RemoteServer rServer : Global.plugin.getAPI().getRemoteServers()) {
+				boolean isConnected = rServer.isConnected();
+				
+				String rsName = rServer.getName();
+				String rsPlayers = isConnected ? Integer.toString(rServer.getRemotePlayers().size()) : "";
+				
+				if (rsName.length() + rsPlayers.length() + (isConnected ? 3 : 0) > 13) {
+					rsName = rsName.substring(0, (isConnected ? 7 - rsPlayers.length() : 10)) + "...";
+				}
+				
+				setTabString( p, a, b, "§9" + rsName + (isConnected ? " [" + rsPlayers + "]" : ""), isConnected ? 0 : -1);
+				b++;
+				
+				if(b == 3){ b = 0; a++;}
+				if(a >= TabAPI.getVertSize()) break;
 			}
 			
-			setTabString( p, a, b, "§9" + rsName + (isConnected ? " [" + rsPlayers + "]" : ""), isConnected ? 0 : -1);
-			b++;
-			
-			if(b == 3){ b = 0; a++;}
-			if(a >= TabAPI.getVertSize()) break;
-		}
-		
-		if (fillLine(p, a, b)) { b = 0; a++; }
+			if (fillLine(p, a, b)) { b = 0; a++; }
 
-		if (a <= TabAPI.getVertSize()) {
-			setTabString( p, a, 0, "§2§l----------" + TabAPI.nextNull(), 9999);
-			setTabString( p, a, 1, "§a§lUserliste", 9999);
-			setTabString( p, a, 2, "§2§l----------" + TabAPI.nextNull(), 9999);
-			a++;
+			if (a <= TabAPI.getVertSize()) {
+				setTabString( p, a, 0, "§2§l----------" + TabAPI.nextNull(), 9999);
+				setTabString( p, a, 1, "§a§lUserlist", 9999);
+				setTabString( p, a, 2, "§2§l----------" + TabAPI.nextNull(), 9999);
+				a++;
+			}
+		
 		}
 		
 		if (a <= TabAPI.getVertSize()) {

@@ -38,6 +38,7 @@ public final class Config {
     static {
         OPTIONS.add("debug");
         OPTIONS.add("deleteDebugFile");
+        OPTIONS.add("showServerlist");
         OPTIONS.add("allowBuild");
         OPTIONS.add("allowLinkLocal");
         OPTIONS.add("allowLinkWorld");
@@ -217,6 +218,14 @@ public final class Config {
 
     public static void setDeleteDebugFile(boolean b) {
         config.set("global.deleteDebugFile", b);
+    }
+    
+    public static boolean getShowServerlist() {
+        return config.getBoolean("global.showServerlist", true);
+    }
+
+    public static void setShowServerlist(boolean b) {
+        config.set("global.showServerlist", b);
     }
 
     public static boolean getAllowBuild() {
