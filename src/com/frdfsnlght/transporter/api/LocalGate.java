@@ -15,6 +15,7 @@
  */
 package com.frdfsnlght.transporter.api;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.GameMode;
@@ -280,6 +281,13 @@ public interface LocalGate extends Gate {
      * @param i      the option value
      */
     public void setDirection(BlockFace dir);
+
+    /**
+     * Returns the list of links that are in the gate's links string list.
+     *
+     * @return a list of link strings
+     */
+    public List<String> getLinks();
 
     /**
      * Returns the value of the "linkLocal" option.
