@@ -97,6 +97,14 @@ public interface RemoteServer {
     public String getKickMessage(InetSocketAddress clientAddress);
 
     /**
+     * Sends an API message to the remote server.
+     *
+     * @param cb            the callback to use when the call completes
+     * @param message       the message
+     */
+    public void sendAPIMessage(Callback<Integer> cb, String message);
+    
+    /**
      * Broadcasts a message to all players on the remote server with the specified permission.
      *
      * @param cb            the callback to use when the call completes

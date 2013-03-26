@@ -21,6 +21,7 @@ import java.util.logging.Level;
 
 import com.frdfsnlght.transporter.api.RemoteException;
 import com.frdfsnlght.transporter.api.TransporterException;
+import com.frdfsnlght.transporter.api.event.APIMessageReceivedEvent;
 import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 
 import org.bukkit.ChatColor;
@@ -102,10 +103,10 @@ public final class APIBackend {
         Utils.logger.log(Level.INFO, String.format("[%s] (API-DEBUG) %s", Global.pluginName, msg));
     }
 
-    public static void invoke(String target, String method, TypeMap args, TypeMap out) throws TransporterException {
+    public static void invoke(String target, String method, TypeMap args, TypeMap out, Server source) throws TransporterException {
         debug("invoke %s.%s: %s", target, method, args);
         if (target.equals("server"))
-            invokeServerMethod(method, args, out);
+            invokeServerMethod(method, args, out, source);
         else if (target.equals("world"))
             invokeWorldMethod(method, args, out);
         else if (target.equals("player"))
@@ -115,13 +116,18 @@ public final class APIBackend {
             throw new RemoteException("unknown API target '%s'", target);
     }
 
-    private static void invokeServerMethod(String method, TypeMap args, TypeMap out) throws TransporterException {
+    private static void invokeServerMethod(String method, TypeMap args, TypeMap out, Server source) throws TransporterException {
         org.bukkit.Server server = Global.plugin.getServer();
         if (method.equals("broadcast"))
             out.put("result", server.broadcast(args.getString("message"), args.getString("permission")));
         else if (method.equals("broadcastMessage"))
             out.put("result", server.broadcastMessage(args.getString("message")));
-        else if (method.equals("dispatchCommand")) {
+        else if (method.equals("apiMessage")) {
+        	String apiMessage = args.getString("message");
+        	APIMessageReceivedEvent event = new APIMessageReceivedEvent(source, apiMessage);
+        	server.getPluginManager().callEvent(event);
+            out.put("result", event.isCancelled());
+        } else if (method.equals("dispatchCommand")) {
             String senderStr = args.getString("sender");
             CommandSender sender = null;
             if ("console".equals(senderStr))

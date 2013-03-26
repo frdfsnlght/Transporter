@@ -292,6 +292,24 @@ public final class Server implements OptionsListener, RemoteServer {
     public boolean isConnected() {
         return readyForAPI;
     }
+    
+    @Override
+    public void sendAPIMessage(final Callback<Integer> cb, String message) {
+        TypeMap args = new TypeMap();
+        args.put("message", message);
+        args.put("serverName", this.getName());
+        sendAPIRequest(new APICallback<TypeMap>() {
+            @Override
+            public void onSuccess(TypeMap m) {
+                if (cb != null) cb.onSuccess(m.getInt("result"));
+            }
+            @Override
+            public void onFailure(RemoteException re) {
+                if (cb != null) cb.onFailure(re);
+            }
+        }, "server", "apiMessage", args);
+    }
+
 
     @Override
     public void broadcast(final Callback<Integer> cb, String message, String permission) {
@@ -1847,7 +1865,7 @@ public final class Server implements OptionsListener, RemoteServer {
         try {
             if ("server".equals(target) && "dispatchCommand".equals(method) && (! getAllowRemoteCommands()))
                 throw new Exception("Remote commands are disabled.");
-            APIBackend.invoke(target, method, args, out);
+            APIBackend.invoke(target, method, args, out, this);
         } catch (Throwable t) {
             out.put("failure", t.getMessage());
         }
