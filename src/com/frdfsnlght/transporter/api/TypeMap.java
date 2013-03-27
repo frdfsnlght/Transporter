@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.frdfsnlght.transporter.compatibility.api;
+package com.frdfsnlght.transporter.api;
 
+import com.frdfsnlght.transporter.JSON;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
-import com.frdfsnlght.transporter.JSON;
 
 /**
  *

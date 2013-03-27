@@ -15,14 +15,13 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.Gate;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.Reservation;
 import com.frdfsnlght.transporter.api.ReservationException;
 import com.frdfsnlght.transporter.api.event.EntityArriveEvent;
 import com.frdfsnlght.transporter.api.event.EntityDepartEvent;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,11 +33,12 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.PoweredMinecart;
-import org.bukkit.entity.StorageMinecart;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.minecart.RideableMinecart;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
@@ -387,21 +387,18 @@ public final class ReservationImpl implements Reservation {
         if (vehicle.getPassenger() instanceof Player)
             extractPlayer((Player)vehicle.getPassenger());
 
-        if (vehicle instanceof Minecart)
-            entityType = EntityType.MINECART;
-        else if (vehicle instanceof PoweredMinecart)
-            entityType = EntityType.POWERED_MINECART;
-        else if (vehicle instanceof StorageMinecart) {
-            entityType = EntityType.STORAGE_MINECART;
-            org.bukkit.inventory.Inventory inv = ((StorageMinecart)vehicle).getInventory();
-            inventory = Arrays.copyOf(inv.getContents(), inv.getSize());
-        } else if (vehicle instanceof Boat)
-            entityType = EntityType.BOAT;
+        if ((vehicle instanceof Minecart) || (vehicle instanceof Boat))
+            entityType = vehicle.getType();
         else
             throw new IllegalArgumentException("can't create state for " + vehicle.getClass().getName());
+
+        if (vehicle instanceof InventoryHolder) {
+            org.bukkit.inventory.Inventory inv = ((InventoryHolder)vehicle).getInventory();
+            inventory = Arrays.copyOf(inv.getContents(), inv.getSize());
+        }
+
         entity = vehicle;
         localEntityId = vehicle.getEntityId();
-        fireTicks = vehicle.getFireTicks();
         fromLocation = vehicle.getLocation();
         fromVelocity = vehicle.getVelocity();
         fromWorldName = vehicle.getWorld().getName();
@@ -655,16 +652,7 @@ public final class ReservationImpl implements Reservation {
 
             completeLocalDepartureGate();
 
-            switch (toServer.getTransferMethod()) {
-                case ClientKick:
-                    String kickMessage = toServer.getKickMessage(player.getAddress());
-                    if (kickMessage == null) return;
-                    Utils.schedulePlayerKick(player, kickMessage);
-                    break;
-                case Bungee:
-                    Utils.sendPlayerToBungeeServer(player, toServer.getRemoteBungeeServer());
-                    break;
-            }
+            if (! toServer.sendPlayer(player)) return;
         }
         if ((entity != null) && (entity != player))
             entity.remove();
@@ -1015,17 +1003,29 @@ public final class ReservationImpl implements Reservation {
                     entity = player;
                     break;
                 case MINECART:
-                    entity = theWorld.spawn(theLocation, Minecart.class);
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.RideableMinecart.class);
                     createdEntity = true;
                     if (player != null)
-                        ((Minecart)entity).setPassenger(player);
+                        ((RideableMinecart)entity).setPassenger(player);
                     break;
-                case POWERED_MINECART:
-                    entity = theWorld.spawn(theLocation, PoweredMinecart.class);
+                case MINECART_CHEST:
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.StorageMinecart.class);
                     createdEntity = true;
                     break;
-                case STORAGE_MINECART:
-                    entity = theWorld.spawn(theLocation, StorageMinecart.class);
+                case MINECART_FURNACE:
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.PoweredMinecart.class);
+                    createdEntity = true;
+                    break;
+                case MINECART_HOPPER:
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.HopperMinecart.class);
+                    createdEntity = true;
+                    break;
+                case MINECART_MOB_SPAWNER:
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.SpawnerMinecart.class);
+                    createdEntity = true;
+                    break;
+                case MINECART_TNT:
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.ExplosiveMinecart.class);
                     createdEntity = true;
                     break;
                 case BOAT:
@@ -1040,11 +1040,13 @@ public final class ReservationImpl implements Reservation {
             switch (entityType) {
                 case MINECART:
                     entity.remove();
-                    entity = theWorld.spawn(theLocation, Minecart.class);
+                    entity = theWorld.spawn(theLocation, org.bukkit.entity.minecart.RideableMinecart.class);
+                    ((RideableMinecart)entity).setPassenger(player);
                     break;
                 case BOAT:
                     entity.remove();
                     entity = theWorld.spawn(theLocation, Boat.class);
+                    ((Boat)entity).setPassenger(player);
                     break;
             }
         }
@@ -1088,7 +1090,8 @@ public final class ReservationImpl implements Reservation {
                 if (! toGateLocal.getReceivePotions())
                     potionEffects = null;
             }
-            player.setVelocity(toVelocity);
+            if (player == entity)
+                player.setVelocity(toVelocity);
             if (inventory != null) {
                 PlayerInventory inv = player.getInventory();
                 for (int slot = 0; slot < inventory.length; slot++) {
@@ -1119,36 +1122,18 @@ public final class ReservationImpl implements Reservation {
             }
         }
 
+        if (player != entity)
+            entity.setVelocity(toVelocity);
+
         switch (entityType) {
-            case MINECART:
-                if ((player != null) && (entity.getPassenger() != player)) {
-                    entity.setPassenger(player);
-                    //player.setVelocity(toVelocity);
-                }
-                entity.setFireTicks(fireTicks);
-                entity.setVelocity(toVelocity);
-                break;
-            case POWERED_MINECART:
-                entity.setFireTicks(fireTicks);
-                entity.setVelocity(toVelocity);
-                break;
-            case STORAGE_MINECART:
-                entity.setFireTicks(fireTicks);
-                entity.setVelocity(toVelocity);
+            case MINECART_CHEST:
+            case MINECART_HOPPER:
                 if ((inventory != null) && ((toGateLocal == null) || toGateLocal.getReceiveInventory())) {
-                    StorageMinecart mc = (StorageMinecart)entity;
-                    org.bukkit.inventory.Inventory inv = mc.getInventory();
+                    InventoryHolder h = (InventoryHolder)entity;
+                    org.bukkit.inventory.Inventory inv = h.getInventory();
                     for (int slot = 0; slot <  inventory.length; slot++)
                         inv.setItem(slot, inventory[slot]);
                 }
-                break;
-            case BOAT:
-                if ((player != null) && (entity.getPassenger() != player)) {
-                    entity.setPassenger(player);
-                    //player.setVelocity(toVelocity);
-                }
-                entity.setFireTicks(fireTicks);
-                entity.setVelocity(toVelocity);
                 break;
         }
     }
@@ -1185,6 +1170,7 @@ public final class ReservationImpl implements Reservation {
         return dst;
     }
 
+    /*
     private enum EntityType {
         PLAYER,
         MINECART,
@@ -1192,5 +1178,6 @@ public final class ReservationImpl implements Reservation {
         STORAGE_MINECART,
         BOAT
     }
+*/
 
 }

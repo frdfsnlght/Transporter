@@ -15,11 +15,10 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.inquisitor.Inquisitor;
 import com.frdfsnlght.inquisitor.api.API;
 import com.frdfsnlght.transporter.api.ReservationException;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -239,16 +238,8 @@ public final class Realm {
 
             return false;
         }
-        switch (server.getTransferMethod()) {
-            case ClientKick:
-                String kickMessage = server.getKickMessage(player.getAddress());
-                if (kickMessage == null) return false;
-                Utils.schedulePlayerKick(player, kickMessage);
-                break;
-            case Bungee:
-                Utils.sendPlayerToBungeeServer(player, server.getRemoteBungeeServer());
-                break;
-        }
+        if (! server.sendPlayer(player)) return false;
+
         redirectedPlayers.add(player.getName());
         if (inquisitorAvailable())
             inquisitor.ignorePlayerJoin(player.getName());

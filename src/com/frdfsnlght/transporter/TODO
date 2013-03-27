@@ -12,6 +12,8 @@ TODO:
 * Add commands to extract part of a world into a design file.
 * Add feedback output when server connect command is given (http://dev.bukkit.org/server-mods/transporter/?comment=1012).
 
+* Add option to disable player list updating (for use when begind BungeeCord)
+
 
 
 Testing:
@@ -20,9 +22,17 @@ Testing:
 Wiki Updates:
 
 Changelog:
-* Updated for CB 1.4.7-R1.0.
-* Updated to handle newer versions of BungeeCord.
-* Gate banning * will now allow empty inventory slots.
+* Updated for CB 1.5.1 dev builds.
+* Added global option "useTabAPI".
+* Added global option "resendLostPlayers".
+* Added "tablist" configuration (only applies when "useTabAPI" is true, see [[TabList]])
+* Dropped support for Tekkit.
+* Dropped "compatibility" classes for older versions of Bukkit.
+* Fixed some problems with minecarts, but not all.
+* Added new minecart type handling. There's a bug in Bukkit that doesn't allow new Hopper minecarts to work (throws an exception on the console).
+* Added client patcher for MC 1.5.1 (there is no patcher for MC 1.5.0).
+* Incorporated CubeNation's changes, with my own tweaks (thanks!).
+
 
 
 

@@ -15,10 +15,9 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.TransporterException;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;

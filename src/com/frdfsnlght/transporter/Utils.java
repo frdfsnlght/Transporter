@@ -68,8 +68,6 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitWorker;
 import org.bukkit.util.Vector;
 
-
-
 /**
  *
  * @author frdfsnlght <frdfsnlght@gmail.com>
@@ -192,7 +190,6 @@ public class Utils {
         InputStream is = Utils.class.getResourceAsStream(resPath);
         try {
             OutputStream os = new FileOutputStream(dstFile);
-            logger.info("Path: " + resPath);
             byte[] buffer = new byte[1024];
             int len;
             while ((len = is.read(buffer)) > 0)

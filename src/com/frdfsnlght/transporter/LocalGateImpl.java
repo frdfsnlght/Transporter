@@ -15,16 +15,14 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.LocalGate;
 import com.frdfsnlght.transporter.api.TransporterException;
 import com.frdfsnlght.transporter.api.event.LocalGateClosedEvent;
-import com.frdfsnlght.transporter.api.event.LocalGateCreateEvent;
 import com.frdfsnlght.transporter.api.event.LocalGateOpenedEvent;
 import com.frdfsnlght.transporter.command.CommandException;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -668,7 +666,7 @@ public abstract class LocalGateImpl extends GateImpl implements LocalGate, Optio
         gate.attach(this);
         onOpen();
         onDestinationChanged();
-        
+
         LocalGateOpenedEvent event = new LocalGateOpenedEvent(this);
         Global.plugin.getServer().getPluginManager().callEvent(event);
 
@@ -691,7 +689,7 @@ public abstract class LocalGateImpl extends GateImpl implements LocalGate, Optio
         incoming.clear();
         onClose();
         onDestinationChanged();
-        
+
         LocalGateClosedEvent event = new LocalGateClosedEvent(this);
         Global.plugin.getServer().getPluginManager().callEvent(event);
 

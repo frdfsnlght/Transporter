@@ -28,8 +28,8 @@ import com.frdfsnlght.transporter.command.RealmCommand;
 import com.frdfsnlght.transporter.command.ReloadCommand;
 import com.frdfsnlght.transporter.command.SaveCommand;
 import com.frdfsnlght.transporter.command.ServerCommand;
+import com.frdfsnlght.transporter.command.TabListCommand;
 import com.frdfsnlght.transporter.command.WorldCommand;
-import com.frdfsnlght.transporter.compatibility.api.CompatibilityProvider;
 import com.frdfsnlght.transporter.test.TestCommand;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +49,8 @@ public final class Global {
     public static String pluginName;
     public static String pluginVersion;
     public static boolean started = false;
-    public static CompatibilityProvider compatibility;
-    
+    //public static Compatibility compatibility;
+
     public static final List<CommandProcessor> commands = new ArrayList<CommandProcessor>();
 
     static {
@@ -65,6 +65,7 @@ public final class Global {
         commands.add(new NetworkCommand());
         commands.add(new WorldCommand());
         commands.add(new RealmCommand());
+        commands.add(new TabListCommand());
         commands.add(new APICommand());
         commands.add(new DebugCommand());
 

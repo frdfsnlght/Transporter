@@ -15,11 +15,10 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 
 /**
  *

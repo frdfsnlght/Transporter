@@ -15,6 +15,7 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.nijiko.permissions.PermissionHandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,9 +27,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-
-
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
@@ -51,6 +49,7 @@ public final class Permissions {
 
     private static boolean basicPermsInitted = false;
     private static net.milkbowl.vault.permission.Permission vaultPlugin = null;
+    private static PermissionHandler permissionsPlugin = null;
     private static PermissionManager permissionsExPlugin = null;
 
     public static boolean basicPermsAvailable() {
@@ -96,6 +95,12 @@ public final class Permissions {
         }
         if (! p.isEnabled()) {
             Utils.warning("Permissions is not enabled!");
+            return false;
+        }
+        if (permissionsPlugin != null) return true;
+        permissionsPlugin = ((com.nijikokun.bukkit.Permissions.Permissions)p).getHandler();
+        if (permissionsPlugin == null) {
+            Utils.warning("Permissions didn't return a handler!");
             return false;
         }
         Utils.info("Initialized Permissions for Permissions");
@@ -218,6 +223,14 @@ public final class Permissions {
         }
 
         if (permissionsAvailable()) {
+            for (String perm : perms) {
+                if (requireAll) {
+                    if (! permissionsPlugin.permission(worldName, playerName, perm))
+                        throw new PermissionsException("not permitted");
+                } else {
+                    if (permissionsPlugin.permission(worldName, playerName, perm)) return;
+                }
+            }
             if ((! requireAll) && (perms.length > 0))
                 throw new PermissionsException("not permitted");
             return;

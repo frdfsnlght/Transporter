@@ -17,8 +17,7 @@ package com.frdfsnlght.transporter.net;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeoutException;
-
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+import com.frdfsnlght.transporter.api.TypeMap;
 
 /**
  *

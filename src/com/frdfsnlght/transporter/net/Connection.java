@@ -28,12 +28,11 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.frdfsnlght.transporter.Global;
 import com.frdfsnlght.transporter.Server;
 import com.frdfsnlght.transporter.Servers;
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.Utils;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 
 /**
  *

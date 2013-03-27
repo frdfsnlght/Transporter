@@ -97,14 +97,6 @@ public interface RemoteServer {
     public String getKickMessage(InetSocketAddress clientAddress);
 
     /**
-     * Sends an API message to the remote server.
-     *
-     * @param cb            the callback to use when the call completes
-     * @param message       the message
-     */
-    public void sendAPIMessage(Callback<Integer> cb, String message);
-    
-    /**
      * Broadcasts a message to all players on the remote server with the specified permission.
      *
      * @param cb            the callback to use when the call completes
@@ -129,6 +121,19 @@ public interface RemoteServer {
      * @param commandLine   the command to execute
      */
     public void dispatchCommand(Callback<Boolean> cb, CommandSender sender, String commandLine);
+
+    /**
+     * Sends a request to the remote server.
+     * Requests on the remote server are handled by listening for the
+     * "RemoteRequestReceivedEvent" event.
+     * The "request" object can contain any keys/values pertinent to
+     * the listener of the event. The listener can populate it's "response"
+     * object, which will be returned to the provided callback on success.
+     *
+     * @param cb            the callback to use when the call completes
+     * @param request       the request object
+     */
+    public void sendRemoteRequest(Callback<TypeMap> cb, TypeMap request);
 
     /**
      * Returns the configured default game mode on the remote server.

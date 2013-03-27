@@ -26,6 +26,7 @@ import com.frdfsnlght.transporter.api.RemoteWorld;
 import com.frdfsnlght.transporter.api.ReservationException;
 import com.frdfsnlght.transporter.api.TransferMethod;
 import com.frdfsnlght.transporter.api.TransporterException;
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.event.RemoteGateCreateEvent;
 import com.frdfsnlght.transporter.api.event.RemoteGateDestroyEvent;
 import com.frdfsnlght.transporter.api.event.RemotePlayerChangeWorldEvent;
@@ -35,7 +36,6 @@ import com.frdfsnlght.transporter.api.event.RemotePlayerKickEvent;
 import com.frdfsnlght.transporter.api.event.RemotePlayerQuitEvent;
 import com.frdfsnlght.transporter.api.event.RemoteServerConnectEvent;
 import com.frdfsnlght.transporter.api.event.RemoteServerDisconnectEvent;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 import com.frdfsnlght.transporter.net.Connection;
 import com.frdfsnlght.transporter.net.Network;
 import java.lang.reflect.Method;
@@ -52,8 +52,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -292,24 +290,6 @@ public final class Server implements OptionsListener, RemoteServer {
     public boolean isConnected() {
         return readyForAPI;
     }
-    
-    @Override
-    public void sendAPIMessage(final Callback<Integer> cb, String message) {
-        TypeMap args = new TypeMap();
-        args.put("message", message);
-        args.put("serverName", this.getName());
-        sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
-            public void onSuccess(TypeMap m) {
-                if (cb != null) cb.onSuccess(m.getInt("result"));
-            }
-            @Override
-            public void onFailure(RemoteException re) {
-                if (cb != null) cb.onFailure(re);
-            }
-        }, "server", "apiMessage", args);
-    }
-
 
     @Override
     public void broadcast(final Callback<Integer> cb, String message, String permission) {
@@ -364,6 +344,22 @@ public final class Server implements OptionsListener, RemoteServer {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "dispatchCommand", args);
+    }
+
+    @Override
+    public void sendRemoteRequest(final Callback<TypeMap> cb, TypeMap request) {
+        TypeMap args = new TypeMap();
+        args.put("request", request);
+        sendAPIRequest(new APICallback<TypeMap>() {
+            @Override
+            public void onSuccess(TypeMap m) {
+                if (cb != null) cb.onSuccess(m.getMap("response"));
+            }
+            @Override
+            public void onFailure(RemoteException re) {
+                if (cb != null) cb.onFailure(re);
+            }
+        }, "server", "remoteRequest", args);
     }
 
     @Override
@@ -906,6 +902,20 @@ public final class Server implements OptionsListener, RemoteServer {
         disconnect(true);
     }
 
+    public boolean sendPlayer(Player player) {
+        switch (getTransferMethod()) {
+            case ClientKick:
+                String kickMessage = getKickMessage(player.getAddress());
+                if (kickMessage == null) return false;
+                Utils.schedulePlayerKick(player, kickMessage);
+                break;
+            case Bungee:
+                Utils.sendPlayerToBungeeServer(player, getRemoteBungeeServer());
+                break;
+        }
+        return true;
+    }
+
     // Connection callbacks, called from main network thread.
 
     // outbound connection
@@ -920,11 +930,6 @@ public final class Server implements OptionsListener, RemoteServer {
             @Override
             public void run() {
                 receiveRefresh(null);
-                
-        		Bukkit.getScheduler().scheduleSyncDelayedTask(Global.plugin, new Runnable(){ public void run(){
-        			Global.plugin.updateTablist();
-        		}}, 3);
-
             }
         });
     }
@@ -938,12 +943,9 @@ public final class Server implements OptionsListener, RemoteServer {
         connection = null;
         if (Network.isStopped()) {
             Gates.removeGatesForServer(this);
-            clearRemotePlayers();
+            clearRemotePlayers(true);
             remoteGates.clear();
             remoteWorlds.clear();
-            
-            Global.plugin.updateTablist();
-
         } else {
             reconnect();
             final Server me = this;
@@ -953,12 +955,9 @@ public final class Server implements OptionsListener, RemoteServer {
                     RemoteServerDisconnectEvent event = new RemoteServerDisconnectEvent(me);
                     Global.plugin.getServer().getPluginManager().callEvent(event);
                     Gates.removeGatesForServer(me);
-                    clearRemotePlayers();
+                    clearRemotePlayers(true);
                     remoteGates.clear();
                     remoteWorlds.clear();
-                    
-                    Global.plugin.updateTablist();
-                    
                 }
             });
         }
@@ -1191,12 +1190,6 @@ public final class Server implements OptionsListener, RemoteServer {
         message.put("prefix", Chat.getPrefix(player));
         message.put("suffix", Chat.getSuffix(player));
         sendMessage(message);
-
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Global.plugin, new Runnable(){ public void run(){
-			Global.plugin.updateTablist();
-		}}, 3);
-
-//        sendRemotePlayers(player);
     }
 
     public void sendPlayerQuit(Player player, boolean hasReservation) {
@@ -1414,11 +1407,11 @@ public final class Server implements OptionsListener, RemoteServer {
         Collection<TypeMap> players = message.getMapList("players");
         if (players == null)
             throw new ServerException("player list required");
-        clearRemotePlayers();
+        clearRemotePlayers(false);
         for (TypeMap msg : players) {
             try {
                 RemotePlayerImpl player = new RemotePlayerImpl(this, msg.getString("name"), msg.getString("displayName"), msg.getString("worldName"), msg.getString("prefix"), msg.getString("suffix"));
-                addRemotePlayer(player);
+                addRemotePlayer(player, false);
             } catch (IllegalArgumentException iae) {
                 Utils.warning("received bad player from '%s'", getName());
             }
@@ -1458,6 +1451,8 @@ public final class Server implements OptionsListener, RemoteServer {
             RemoteServerConnectEvent event = new RemoteServerConnectEvent(this);
             Global.plugin.getServer().getPluginManager().callEvent(event);
         }
+        
+        TabList.updateAll();
     }
 
     private void receiveGateCreated(TypeMap message) {
@@ -1767,7 +1762,7 @@ public final class Server implements OptionsListener, RemoteServer {
             throw new ServerException("missing world");
         boolean hasReservation = message.getBoolean("hasReservation");
         RemotePlayerImpl player = new RemotePlayerImpl(this, playerName, displayName, worldName, message.getString("prefix"), message.getString("suffix"));
-        addRemotePlayer(player);
+        addRemotePlayer(player, true);
         if (! hasReservation) {
             RemotePlayerJoinEvent event = new RemotePlayerJoinEvent(player);
             Global.plugin.getServer().getPluginManager().callEvent(event);
@@ -1784,7 +1779,7 @@ public final class Server implements OptionsListener, RemoteServer {
         RemotePlayerImpl player = remotePlayers.get(playerName);
         if (player == null) return;
             //throw new ServerException("unknown player '%s'", playerName);
-        removeRemotePlayer(playerName);
+        removeRemotePlayer(playerName, true);
         if (! hasReservation) {
             RemotePlayerQuitEvent event = new RemotePlayerQuitEvent(player);
             Global.plugin.getServer().getPluginManager().callEvent(event);
@@ -1800,7 +1795,7 @@ public final class Server implements OptionsListener, RemoteServer {
         boolean hasReservation = message.getBoolean("hasReservation");
         RemotePlayerImpl player = remotePlayers.get(playerName);
         if (player == null) return;
-        removeRemotePlayer(playerName);
+        removeRemotePlayer(playerName, true);
         if (! hasReservation) {
             RemotePlayerKickEvent event = new RemotePlayerKickEvent(player);
             Global.plugin.getServer().getPluginManager().callEvent(event);
@@ -2038,40 +2033,27 @@ public final class Server implements OptionsListener, RemoteServer {
         remotePublicAddress = sb.toString().trim();
     }
 
-    private void clearRemotePlayers() {
+    private void clearRemotePlayers(boolean updateTabList) {
         for (String playerName : new HashSet<String>(remotePlayers.keySet()))
-            removeRemotePlayer(playerName);
+            removeRemotePlayer(playerName, false);
         remotePlayers.clear();
+        if (updateTabList) TabList.updateAll();
     }
 
-    private void addRemotePlayer(RemotePlayerImpl player) {
+    private void addRemotePlayer(RemotePlayerImpl player, boolean updateTabList) {
         String playerName = player.getName();
         remotePlayers.put(playerName, player);
-        
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Global.plugin, new Runnable(){ public void run(){
-			Global.plugin.updateTablist();
-		}}, 3);
-        /*
         playerName = formatPlayerListName(player);
         if (playerName == null) return;
-        Global.compatibility.sendAllPacket201PlayerInfo(playerName, true, 9999);
-        //((CraftServer)Global.plugin.getServer()).getHandle().sendAll(new Packet201PlayerInfo(playerName, true, 9999));
-        */
+        if (updateTabList) TabList.updateAll();
     }
 
-    private void removeRemotePlayer(String playerName) {
+    private void removeRemotePlayer(String playerName, boolean updateTabList) {
         RemotePlayerImpl player = remotePlayers.remove(playerName);
-
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Global.plugin, new Runnable(){ public void run(){
-			Global.plugin.updateTablist();
-		}}, 3);
-        /*
         if (player == null) return;
         playerName = formatPlayerListName(player);
         if (playerName == null) return;
-        Global.compatibility.sendAllPacket201PlayerInfo(playerName, false, 9999);
-        //((CraftServer)Global.plugin.getServer()).getHandle().sendAll(new Packet201PlayerInfo(playerName, false, 9999));
-        */
+        if (updateTabList) TabList.updateAll();
     }
 
     /*
@@ -2080,24 +2062,17 @@ public final class Server implements OptionsListener, RemoteServer {
         for (RemotePlayerImpl remotePlayer : remotePlayers.values()) {
             String playerName = formatPlayerListName(remotePlayer);
             if (playerName == null) continue;
-            Global.compatibility.sendPlayerPacket201PlayerInfo(player, playerName, true, 9999);
-            //NetServerHandler nsh = ((CraftPlayer)player).getHandle().netServerHandler;
-            //if (nsh == null) continue;
-            //nsh.sendPacket(new Packet201PlayerInfo(playerName, true, 9999));
+            TabList.addPlayerToPlayer(player, playerName);
         }
     }
     */
 
-    private String formatPlayerListName(RemotePlayerImpl player) {
+    public String formatPlayerListName(RemotePlayerImpl player) {
         String format = getPlayerListFormat();
-        return Server.formatPlayerListName(format, player, name);
-    }
-
-    public static String formatPlayerListName(String format, RemotePlayer player, String serverName) {
         if ((format == null) || format.isEmpty()) return null;
         format = format.replace("%player%", ChatColor.stripColor(player.getName()));
         format = format.replace("%world%", (player.getRemoteWorld() == null) ? "unknown" : player.getRemoteWorld().getName());
-        format = format.replace("%server%", serverName);
+        format = format.replace("%server%", name);
         format = Chat.colorize(format);
         if (format.length() > 16)
             format = format.substring(0, 16);

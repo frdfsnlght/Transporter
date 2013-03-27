@@ -15,12 +15,11 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.GateException;
 import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.LocalServerGate;
 import com.frdfsnlght.transporter.api.TransporterException;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Location;

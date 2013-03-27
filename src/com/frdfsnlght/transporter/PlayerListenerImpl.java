@@ -15,29 +15,22 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.Gate;
 import com.frdfsnlght.transporter.api.GateException;
-import com.frdfsnlght.transporter.api.RemotePlayer;
-import com.frdfsnlght.transporter.api.RemoteServer;
 import com.frdfsnlght.transporter.api.ReservationException;
 import com.frdfsnlght.transporter.api.TransporterException;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -45,10 +38,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
-import org.mcsg.double0negative.tabapi.TabAPI;
 
 /**
  *
@@ -155,51 +144,6 @@ public final class PlayerListenerImpl implements Listener {
             System.out.println(mask);
     }
     */
-
-
-    public PlayerListenerImpl() {
-
-        // This funkyness allows the code to work for both 1.2.5 and 1.3.1 releases of Bukkit/Tekkit
-        // TODO: once Tekkit is based on 1.3.1, all this can be removed along with the synchronous player chat handler.
-        try {
-            Class.forName("org.bukkit.event.player.AsyncPlayerChatEvent");
-            PlayerAsyncChatListenerImpl l = new PlayerAsyncChatListenerImpl();
-            PluginManager pm = Global.plugin.getServer().getPluginManager();
-            pm.registerEvents(l, Global.plugin);
-            /*
-            AsyncPlayerChatEvent.getHandlerList().register(new RegisteredListener(
-                    this,
-                    new EventExecutor() {
-                        @Override
-                        public void execute(Listener listener, Event event) throws EventException {
-                            onPlayerChatAsync((AsyncPlayerChatEvent)event);
-                        }
-                    },
-                    EventPriority.MONITOR,
-                    Global.plugin,
-                    true)
-                    );
-            */
-            Utils.debug("registered as listener for Asynchronous chat events");
-        } catch (ClassNotFoundException e) {
-            PlayerChatEvent.getHandlerList().register(new RegisteredListener(
-                    this,
-                    new EventExecutor() {
-                        @Override
-                        public void execute(Listener listener, Event event) throws EventException {
-                            onPlayerChatSync((PlayerChatEvent)event);
-                        }
-                    },
-                    EventPriority.MONITOR,
-                    Global.plugin,
-                    true)
-                    );
-            Utils.debug("registered as listener for Synchronous chat events");
-        }
-    }
-
-
-    //private Map<Player,Location> playerLocations = new HashMap<Player,Location>();
 
     public static Player testPlayer = null;
 
@@ -344,14 +288,19 @@ public final class PlayerListenerImpl implements Listener {
         Context ctx = new Context(player);
 
         if ((r != null) && r.isDeparting()) {
+
+            if (Config.getResendLostPlayers()) {
+                // try to send them again
+                Server server = ((RemoteGateImpl)r.getDepartureGate()).server;
+                if (server.sendPlayer(player)) return;
+            }
             ctx.warnLog("You're not supposed to be here.");
             r = null;
         }
 
         for (Server server : Servers.getAll())
             server.sendPlayerJoin(player, r != null);
-        
-        
+        TabList.startPlayer(player);
         if (r == null) {
             LocalGateImpl gate = Gates.findGateForPortal(player.getLocation());
             if (gate != null)
@@ -364,11 +313,6 @@ public final class PlayerListenerImpl implements Listener {
         } catch (ReservationException e) {
             ctx.warnLog("there was a problem processing your arrival: ", e.getMessage());
         }
-        
-		TabAPI.setPriority(Global.plugin, player, 1);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Global.plugin, new Runnable(){ public void run(){
-			updateAll();
-		}}, 3);
 
     }
 
@@ -377,11 +321,10 @@ public final class PlayerListenerImpl implements Listener {
         Player player = event.getPlayer();
         ReservationImpl r = ReservationImpl.get(player);
 
+        TabList.stopPlayer(player);
+
         for (Server server : Servers.getAll())
             server.sendPlayerQuit(player, r != null);
-        
-		updateAll();
-
         if (r != null)
             event.setQuitMessage(null);
     }
@@ -410,10 +353,9 @@ public final class PlayerListenerImpl implements Listener {
         Realm.onRespawn(player);
     }
 
-    // TODO: uncomment this when Tekkit goes to a 1.3.1, also remove PlayerAsyncChatListenerImpl
-    /*
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChatAsync(final AsyncPlayerChatEvent event) {
+        Utils.debug("chat event is canceled: %s", event.isCancelled());
         if (event.isAsynchronous())
             Utils.fire(new Runnable() {
                 @Override
@@ -424,111 +366,5 @@ public final class PlayerListenerImpl implements Listener {
         else
             Chat.send(event.getPlayer(), event.getMessage(), event.getFormat());
     }
-    */
-
-    // TODO: remove this when Tekkit goes to a 1.3.1 RB
-    public void onPlayerChatSync(PlayerChatEvent event) {
-        Chat.send(event.getPlayer(), event.getMessage(), event.getFormat());
-    }
-
-    
-	public void updateAll(){
-		for(Player p: Bukkit.getOnlinePlayers()){
-			update(p);
-		}
-	}
-
-    
-	public void update(Player p){
-
-		int a = 0;
-		int b = 0;
-		
-		if (Config.getShowServerlist()) {
-
-			setTabString( p, a, 0, "§9§l----------" + TabAPI.nextNull(), 9999);
-			setTabString( p, a, 1, "§9§lServerlist", 9999);
-			setTabString( p, a, 2, "§9§l----------" + TabAPI.nextNull(), 9999);
-			a++;
-
-			setTabString( p, a, 0, "§9Local [" + Global.plugin.getServer().getOnlinePlayers().length + "]", 0);
-			b++;
-
-			for (RemoteServer rServer : Global.plugin.getAPI().getRemoteServers()) {
-				boolean isConnected = rServer.isConnected();
-				
-				String rsName = rServer.getName();
-				String rsPlayers = isConnected ? Integer.toString(rServer.getRemotePlayers().size()) : "";
-				
-				if (rsName.length() + rsPlayers.length() + (isConnected ? 3 : 0) > 13) {
-					rsName = rsName.substring(0, (isConnected ? 7 - rsPlayers.length() : 10)) + "...";
-				}
-				
-				setTabString( p, a, b, "§9" + rsName + (isConnected ? " [" + rsPlayers + "]" : ""), isConnected ? 0 : -1);
-				b++;
-				
-				if(b == 3){ b = 0; a++;}
-				if(a >= TabAPI.getVertSize()) break;
-			}
-			
-			if (fillLine(p, a, b)) { b = 0; a++; }
-
-			if (a <= TabAPI.getVertSize()) {
-				setTabString( p, a, 0, "§2§l----------" + TabAPI.nextNull(), 9999);
-				setTabString( p, a, 1, "§a§lUserlist", 9999);
-				setTabString( p, a, 2, "§2§l----------" + TabAPI.nextNull(), 9999);
-				a++;
-			}
-		
-		}
-		
-		if (a <= TabAPI.getVertSize()) {
-			for(Player pl:Bukkit.getOnlinePlayers()){
-				setTabString( p, a, b, pl.getPlayerListName(), 0);
-				b++;
-				
-				if(b == 3){ b = 0; a++;}
-				
-				if(a >= TabAPI.getVertSize()) break;
-			}
-		}
-		
-//		if (fillLine(p, a, b)) { b = 0; a++; }
-		
-		if (a <= TabAPI.getVertSize() && b < 3) {
-			for (RemoteServer rServer : Global.plugin.getAPI().getRemoteServers()) {
-				for (RemotePlayer rPlayer : rServer.getRemotePlayers()) {
-					String pFormattedName = Server.formatPlayerListName(rServer.getPlayerListFormat(), rPlayer, rServer.getName());
-					setTabString( p, a, b, pFormattedName, 0);
-					b++;
-					
-					if(b == 3){ b = 0; a++;}
-					
-					if(a >= TabAPI.getVertSize()) break;
-				}
-				if(a >= TabAPI.getVertSize()) break;
-			}
-		}
-		
-		TabAPI.updatePlayer(p);
-	}
-
-	private boolean fillLine(Player p, int a, int b) {
-		if (a <= TabAPI.getVertSize() && b > 0) {
-			while (b < 3) {
-				setTabString( p, a, b, " " + TabAPI.nextNull(), 9999);
-				b++;
-			}
-			a++;
-			b = 0;
-			return true;
-		}
-		return false;
-	}
-
-	private void setTabString(Player p, int a, int b, String text, int ping) {
-		text = text.trim();
-		TabAPI.setTabString(Global.plugin, p, a, b, text, ping);
-	}
 
 }

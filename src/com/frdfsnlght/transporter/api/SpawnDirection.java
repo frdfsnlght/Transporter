@@ -16,7 +16,6 @@
 package com.frdfsnlght.transporter.api;
 
 import com.frdfsnlght.transporter.Utils;
-
 import org.bukkit.block.BlockFace;
 
 /**

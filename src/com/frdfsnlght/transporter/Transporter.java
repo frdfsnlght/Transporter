@@ -19,7 +19,6 @@ import com.frdfsnlght.transporter.api.API;
 import com.frdfsnlght.transporter.api.TransporterException;
 import com.frdfsnlght.transporter.command.CommandException;
 import com.frdfsnlght.transporter.command.CommandProcessor;
-import com.frdfsnlght.transporter.compatibility.Compatibility;
 import com.frdfsnlght.transporter.net.Network;
 import java.io.File;
 import java.io.IOException;
@@ -58,12 +57,14 @@ public class Transporter extends JavaPlugin {
         Global.pluginVersion = pdf.getVersion();
         Global.started = false;
 
+        /*
         if (! Compatibility.setup()) {
             Utils.severe("unable to find compatible server version, plugin is disabled");
             setEnabled(false);
             return;
         }
-
+        */
+        
         Global.enabled = true;
 
         final Context ctx = new Context();
@@ -156,11 +157,6 @@ public class Transporter extends JavaPlugin {
 
         ctx.sendLog("ready on server '%s'", getServer().getServerName());
 
-		updateTablist();
-    }
-    
-    public void updateTablist() {
-        playerListener.updateAll();
     }
 
     @Override

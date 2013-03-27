@@ -57,7 +57,7 @@ public final class Transporter {
     static public void teleportIfKicked(Minecraft client) {
         if ((port == -1) || (host == null)) return;
         System.out.println("[Transporter] reconnecting...");
-        client.displayGuiScreen(new GuiConnecting(client, host, port));
+        client.displayGuiScreen(new GuiConnecting((GuiScreen)null, client, new ServerData("Remote", host + ":" + port)));
     }
 
 }

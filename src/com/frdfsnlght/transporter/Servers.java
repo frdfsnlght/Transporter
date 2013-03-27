@@ -15,9 +15,8 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.RemoteServer;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

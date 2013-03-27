@@ -15,7 +15,7 @@
  */
 package com.frdfsnlght.transporter;
 
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.net.Network;
 import java.io.File;
 import java.net.Proxy;
@@ -38,7 +38,6 @@ public final class Config {
     static {
         OPTIONS.add("debug");
         OPTIONS.add("deleteDebugFile");
-        OPTIONS.add("showServerlist");
         OPTIONS.add("allowBuild");
         OPTIONS.add("allowLinkLocal");
         OPTIONS.add("allowLinkWorld");
@@ -65,6 +64,7 @@ public final class Config {
         OPTIONS.add("usePermissions");
         OPTIONS.add("usePermissionsEx");
         OPTIONS.add("useVaultChat");
+        OPTIONS.add("useTabAPI");
         OPTIONS.add("dynmapMarkerSetLabel");
         OPTIONS.add("exportedGatesFile");
         OPTIONS.add("worldLoadDelay");
@@ -76,6 +76,7 @@ public final class Config {
         OPTIONS.add("httpProxyPassword");
         OPTIONS.add("checkVersion");
         OPTIONS.add("updateMetrics");
+        OPTIONS.add("resendLostPlayers");
 
         options = new Options(Config.class, OPTIONS, "trp", new OptionsListener() {
             @Override
@@ -218,14 +219,6 @@ public final class Config {
 
     public static void setDeleteDebugFile(boolean b) {
         config.set("global.deleteDebugFile", b);
-    }
-    
-    public static boolean getShowServerlist() {
-        return config.getBoolean("global.showServerlist", true);
-    }
-
-    public static void setShowServerlist(boolean b) {
-        config.set("global.showServerlist", b);
     }
 
     public static boolean getAllowBuild() {
@@ -477,6 +470,14 @@ public final class Config {
         config.set("global.useVaultChat", b);
     }
 
+    public static boolean getUseTabAPI() {
+        return config.getBoolean("global.useTabAPI", false);
+    }
+
+    public static void setUseTabAPI(boolean b) {
+        config.set("global.useTabAPI", b);
+    }
+
     public static String getDynmapMarkerSetLabel() {
         return config.getString("global.dynmapMarkerSetLabel", "Transporter Gates");
     }
@@ -579,6 +580,14 @@ public final class Config {
 
     public static void setUpdateMetrics(boolean b) {
         setPropertyDirect("global.updateMetrics", b);
+    }
+
+    public static boolean getResendLostPlayers() {
+        return config.getBoolean("global.resendLostPlayers", false);
+    }
+
+    public static void setResendLostPlayers(boolean b) {
+        setPropertyDirect("global.resendLostPlayers", b);
     }
 
 

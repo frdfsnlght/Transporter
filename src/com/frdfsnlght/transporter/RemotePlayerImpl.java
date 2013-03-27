@@ -15,14 +15,13 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import com.frdfsnlght.transporter.api.Callback;
 import com.frdfsnlght.transporter.api.RemoteException;
 import com.frdfsnlght.transporter.api.RemoteLocation;
 import com.frdfsnlght.transporter.api.RemotePlayer;
 import com.frdfsnlght.transporter.api.RemoteServer;
 import com.frdfsnlght.transporter.api.RemoteWorld;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import org.bukkit.entity.Player;
 
 /**

@@ -15,18 +15,18 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
-
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
 
 /**
  *
@@ -59,15 +59,17 @@ public final class Inventory {
         MaterialData data = stack.getData();
         if (data != null)
             s.put("data", (int)data.getData());
-        TypeMap tag = Global.compatibility.getItemStackTag(stack);
-        if (tag != null)
-            s.put("tag", tag);
+        TypeMap ench = new TypeMap();
+        for (Enchantment e : stack.getEnchantments().keySet())
+            ench.put(e.getName(), stack.getEnchantments().get(e));
+        if (! ench.isEmpty())
+            s.put("enchantments", ench);
         return s;
     }
 
     public static ItemStack decodeItemStack(TypeMap s) {
         if (s == null) return null;
-        ItemStack stack = Global.compatibility.createItemStack(
+        ItemStack stack = new ItemStack(
                 s.getInt("type"),
                 s.getInt("amount"),
                 (short)s.getInt("durability"));
@@ -75,9 +77,17 @@ public final class Inventory {
             MaterialData data = stack.getData();
             if (data != null)
                 data.setData((byte)s.getInt("data"));
+            stack.setData(data);
         }
-        if (s.containsKey("tag"))
-            stack = Global.compatibility.setItemStackTag(stack, s.getMap("tag"));
+        if (s.containsKey("enchantments")) {
+            TypeMap ench = s.getMap("enchantments");
+            for (String name : ench.getKeys()) {
+                Enchantment e = Enchantment.getByName(name);
+                int level = ench.getInt(name);
+                if (e != null)
+                    stack.addEnchantment(e, level);
+            }
+        }
         return stack;
     }
 

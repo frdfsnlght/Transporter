@@ -15,14 +15,12 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import com.frdfsnlght.transporter.api.LocalWorld;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;

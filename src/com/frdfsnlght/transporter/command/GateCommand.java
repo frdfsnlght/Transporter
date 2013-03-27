@@ -29,7 +29,6 @@ import com.frdfsnlght.transporter.Utils;
 import com.frdfsnlght.transporter.api.ExpandDirection;
 import com.frdfsnlght.transporter.api.GateType;
 import com.frdfsnlght.transporter.api.TransporterException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

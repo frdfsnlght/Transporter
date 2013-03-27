@@ -15,16 +15,14 @@
  */
 package com.frdfsnlght.transporter;
 
+import com.frdfsnlght.transporter.api.TypeMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import com.frdfsnlght.transporter.api.RemoteException;
 import com.frdfsnlght.transporter.api.TransporterException;
-import com.frdfsnlght.transporter.api.event.APIMessageReceivedEvent;
-import com.frdfsnlght.transporter.compatibility.api.TypeMap;
-
 import org.bukkit.ChatColor;
+import com.frdfsnlght.transporter.api.event.RemoteRequestReceivedEvent;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -122,11 +120,12 @@ public final class APIBackend {
             out.put("result", server.broadcast(args.getString("message"), args.getString("permission")));
         else if (method.equals("broadcastMessage"))
             out.put("result", server.broadcastMessage(args.getString("message")));
-        else if (method.equals("apiMessage")) {
-        	String apiMessage = args.getString("message");
-        	APIMessageReceivedEvent event = new APIMessageReceivedEvent(source, apiMessage);
-        	server.getPluginManager().callEvent(event);
-            out.put("result", event.isCancelled());
+        else if (method.equals("remoteRequest")) {
+            TypeMap request = args.getMap("request");
+            TypeMap response = new TypeMap();
+            RemoteRequestReceivedEvent event = new RemoteRequestReceivedEvent(source, request, response);
+            server.getPluginManager().callEvent(event);
+            response.put("cancelled", event.isCancelled());
         } else if (method.equals("dispatchCommand")) {
             String senderStr = args.getString("sender");
             CommandSender sender = null;
