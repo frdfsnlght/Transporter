@@ -20,6 +20,8 @@ import com.frdfsnlght.transporter.api.TransporterException;
 import com.frdfsnlght.transporter.command.CommandException;
 import com.frdfsnlght.transporter.command.CommandProcessor;
 import com.frdfsnlght.transporter.net.Network;
+import com.frdfsnlght.transporter.net.VanishHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,6 +47,7 @@ public class Transporter extends JavaPlugin {
     private VehicleListenerImpl vehicleListener;
     private WorldListenerImpl worldListener;
     private EntityListenerImpl entityListener;
+    private VanishHelper vanishHelper;
 
     private API api = null;
 
@@ -115,6 +118,7 @@ public class Transporter extends JavaPlugin {
         vehicleListener = new VehicleListenerImpl();
         worldListener = new WorldListenerImpl();
         entityListener = new EntityListenerImpl();
+        try { vanishHelper = new VanishHelper(); } catch (Exception e) {} catch (Error e) {}
 
         Designs.load(ctx);
         Network.start(ctx);
@@ -128,6 +132,7 @@ public class Transporter extends JavaPlugin {
         pm.registerEvents(vehicleListener, this);
         pm.registerEvents(worldListener, this);
         pm.registerEvents(entityListener, this);
+        if (vanishHelper != null) pm.registerEvents(vanishHelper, this);
 
         Runnable loadWorlds = new Runnable() {
             @Override
