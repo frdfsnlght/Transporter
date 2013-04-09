@@ -16,6 +16,7 @@
 package com.frdfsnlght.transporter;
 
 import com.frdfsnlght.transporter.api.RemotePlayer;
+import com.frdfsnlght.transporter.net.VanishHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -250,8 +251,8 @@ public final class TabList {
             }
 
 			for (Player p : Global.plugin.getServer().getOnlinePlayers())
-                // TODO: get player's actual ping time if Bukkit ever implements it
-                pos = setLocalPlayer(screen, pos, p.getPlayerListName(), 0);
+			    if (!isVanished(p.getName()))
+                    pos = setLocalPlayer(screen, pos, p.getPlayerListName(), 0);
             for (Server server : Servers.getAll()) {
                 for (RemotePlayer remotePlayer : server.getRemotePlayers())
                     pos = setRemotePlayer(screen, pos, (RemotePlayerImpl)remotePlayer, server);
@@ -267,6 +268,16 @@ public final class TabList {
         }
         return screen;
 	}
+    
+    private static boolean isVanished(String playerName) {
+        try {
+            // use helper/wrapper class, so it will be ignored when Vanish is not available
+            return VanishHelper.isVanished(playerName);
+        } catch (Exception e) {} catch (Error e) {}
+        
+        // Vanish plugin not found. Ignoring...
+        return false;
+    }
 
     private static void sendScreenToPlayer(List<TabListCell> screen, Player player) {
         for (TabListCell cell : screen) {

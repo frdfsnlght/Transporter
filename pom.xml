@@ -37,6 +37,10 @@
       <id>cna-public-repos</id>
       <url>http://nexus.cube-nation.de/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>kitteh-repo</id>
+      <url>http://repo.kitteh.org/content/groups/public</url>
+    </repository>
   </repositories>
   <dependencies>
       <dependency>
@@ -86,6 +90,12 @@
          <groupId>org.mcsg.double0negative.tabapi</groupId>
          <artifactId>TabAPI</artifactId>
          <version>0.1.15</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.kitteh</groupId>
+         <artifactId>VanishNoPacket</artifactId>
+         <version>3.16.2-SNAPSHOT</version>
          <optional>true</optional>
       </dependency>
   </dependencies>
