@@ -155,7 +155,11 @@ public final class TabList {
     }
 
     public static String getServerListHeader() {
-        return Config.getStringDirect("tablist.serverListHeader", "%BLUE%%BOLD%----------|%BLUE%%BOLD%ServerList|%BLUE%%BOLD%----------");
+        return Config.getStringDirect("tablist.serverListHeader", "%BLUE%%BOLD%----------|%BLUE%%BOLD%Servers [{c}]|%BLUE%%BOLD%----------");
+    }
+
+    public static String getLocalServerName() {
+        return Config.getStringDirect("tablist.localServerName", "Local");
     }
 
     public static void setServerListHeader(String s) {
@@ -199,7 +203,7 @@ public final class TabList {
     }
 
     public static String getPlayerListHeader() {
-        return Config.getStringDirect("tablist.playerListHeader", "%DARK_GREEN%%BOLD%----------|%GREEN%%BOLD%PlayerList|%DARK_GREEN%%BOLD%----------");
+        return Config.getStringDirect("tablist.playerListHeader", "%DARK_GREEN%%BOLD%----------|%GREEN%%BOLD%Players [{c}]|%DARK_GREEN%%BOLD%----------");
     }
 
     public static void setPlayerListHeader(String s) {
@@ -232,12 +236,18 @@ public final class TabList {
 
 		if (getShowServerList()) {
             String format = getServerListHeader();
+            
+            if (format.indexOf("{c}") != -1) {
+                int allServerCount = Servers.getAll().size() + 1;
+                format = format.replaceAll("\\{c\\}", String.valueOf(allServerCount));
+            }
+            
             if (! format.isEmpty()) {
                 pos = setCells(screen, pos, format, 9999);
                 pos = newLine(pos, false);
             }
 
-            pos = setServer(screen, pos, "Local", Global.plugin.getServer().getOnlinePlayers().length, true);
+            pos = setServer(screen, pos, getLocalServerName(), Global.plugin.getServer().getOnlinePlayers().length, true);
             for (Server server : Servers.getAll())
                 pos = setServer(screen, pos, server.getName(), server.getRemotePlayers().size(), server.isConnected());
             pos = newLine(pos, false);
@@ -245,6 +255,13 @@ public final class TabList {
 
 		if (getShowPlayerList()) {
             String format = getPlayerListHeader();
+            
+            if (format.indexOf("{c}") != -1) {
+                int allPlayerCount = Global.plugin.getServer().getOnlinePlayers().length;
+                for (Server server : Servers.getAll()) allPlayerCount += server.getRemotePlayers().size();
+                format = format.replaceAll("\\{c\\}", String.valueOf(allPlayerCount));
+            }
+            
             if (! format.isEmpty()) {
                 pos = setCells(screen, pos, format, 9999);
                 pos = newLine(pos, false);
