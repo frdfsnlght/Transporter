@@ -165,7 +165,7 @@ public final class ReservationImpl implements Reservation {
     private String clientAddress = null;
 
     private ItemStack[] inventory = null;
-    private int health = 0;
+    private double health = 0;
     private int remainingAir = 0;
     private int fireTicks = 0;
     private int foodLevel = 0;
@@ -275,7 +275,7 @@ public final class ReservationImpl implements Reservation {
         fromLocation = new Location(null, in.getDouble("fromX"), in.getDouble("fromY"), in.getDouble("fromZ"), in.getFloat("fromYaw"), in.getFloat("fromPitch"));
         fromVelocity = new Vector(in.getDouble("velX"), in.getDouble("velY"), in.getDouble("velZ"));
         inventory = Inventory.decodeItemStackArray(in.getMapList("inventory"));
-        health = in.getInt("health");
+        health = in.getDouble("health");
         remainingAir = in.getInt("remainingAir");
         fireTicks = in.getInt("fireTicks");
         foodLevel = in.getInt("foodLevel");
