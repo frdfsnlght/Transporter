@@ -65,6 +65,7 @@ public final class Config {
         OPTIONS.add("usePermissionsEx");
         OPTIONS.add("useVaultChat");
         OPTIONS.add("useTabAPI");
+        OPTIONS.add("hideLocalLoginLeaveMessage");
         OPTIONS.add("dynmapMarkerSetLabel");
         OPTIONS.add("exportedGatesFile");
         OPTIONS.add("worldLoadDelay");
@@ -476,6 +477,14 @@ public final class Config {
 
     public static void setUseTabAPI(boolean b) {
         config.set("global.useTabAPI", b);
+    }
+    
+    public static boolean getHideLocalLoginLeaveMessage() {
+        return config.getBoolean("global.hideLocalLoginLeaveMessage", true);
+    }
+
+    public static void setHideLocalLoginLeaveMessage(boolean b) {
+        config.set("global.hideLocalLoginLeaveMessage", b);
     }
 
     public static String getDynmapMarkerSetLabel() {

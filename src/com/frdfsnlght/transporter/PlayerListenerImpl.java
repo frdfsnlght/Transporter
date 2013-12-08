@@ -309,7 +309,7 @@ public final class PlayerListenerImpl implements Listener {
         }
         try {
             r.arrive();
-            event.setJoinMessage(null);
+            if (Config.getHideLocalLoginLeaveMessage()) event.setJoinMessage(null);
         } catch (ReservationException e) {
             ctx.warnLog("there was a problem processing your arrival: ", e.getMessage());
         }
@@ -325,8 +325,10 @@ public final class PlayerListenerImpl implements Listener {
 
         for (Server server : Servers.getAll())
             server.sendPlayerQuit(player, r != null);
-        if (r != null)
-            event.setQuitMessage(null);
+        if (r != null) {
+            if (Config.getHideLocalLoginLeaveMessage()) event.setQuitMessage(null);
+        }
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
