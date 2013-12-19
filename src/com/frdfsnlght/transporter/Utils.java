@@ -772,7 +772,7 @@ public class Utils {
 
     public static void checkVersion() {
         try {
-            String urlStr = Global.plugin.getDescription().getWebsite() + "pages/version";
+            String urlStr = Global.plugin.getDescription().getWebsite() + "wiki/VERSION";
             URL url = new URL(urlStr);
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setInstanceFollowRedirects(true);

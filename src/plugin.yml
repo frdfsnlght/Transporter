@@ -3,7 +3,7 @@ main: com.frdfsnlght.transporter.Transporter
 version: "8.15"
 authors:
   - frdfsnlght
-website: http://dev.bukkit.org/server-mods/transporter/
+website: https://github.com/frdfsnlght/Transporter/
 description: >
   Provides teleportation through gates between worlds and servers.
 softdepend: [Vault, Inquisitor, Permissions, PermissionsEx, Register, Dynmap, TabAPI, VanishNoPacket]
