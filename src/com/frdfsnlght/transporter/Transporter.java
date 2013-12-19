@@ -109,8 +109,9 @@ public class Transporter extends JavaPlugin {
 
         Config.load(ctx);
 
-        if (Config.getCheckVersion())
-            Utils.checkVersion();
+        if (Config.getCheckVersion()) {
+            Utils.startVersionChecker(this);
+        }
 
         serverListener = new ServerListenerImpl();
         blockListener = new BlockListenerImpl();

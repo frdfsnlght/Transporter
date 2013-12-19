@@ -29,13 +29,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.Proxy;
 import java.net.URISyntaxException;
@@ -56,6 +54,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -64,7 +64,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.Messenger;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
 import org.bukkit.util.Vector;
 
@@ -82,6 +84,12 @@ public class Utils {
     private static final int DEBUG_LOG_BYTES = 20 * 1024;
 
     private static Pattern tokenPattern = Pattern.compile("%(\\w+)%");
+
+    private static String currentVersion;
+    private static String latestVersion;
+    private static String updateMessage = ChatColor.RED + "[" + Global.pluginName + "] " + ChatColor.DARK_RED
+            + "There is a update ready to be downloaded! You are using " + ChatColor.RED + "v%s" + ChatColor.DARK_RED
+            + ", the new version is " + ChatColor.RED + "%s" + ChatColor.DARK_RED + "!";
 
     public static void info(String msg, Object ... args) {
         if (args.length > 0)
@@ -390,16 +398,16 @@ public class Utils {
         return Global.plugin.getServer().getScheduler().callSyncMethod(Global.plugin, task);
     }
 
-    public static int worker(Runnable run) {
-        if (! Global.enabled) return -1;
-        return Global.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Global.plugin, run);
+    public static BukkitTask worker(Runnable run) {
+        if (! Global.enabled) return null;
+        return Global.plugin.getServer().getScheduler().runTaskAsynchronously(Global.plugin, run);
     }
 
     // delay is millis
-    public static int workerDelayed(Runnable run, long delay) {
-        if (! Global.enabled) return -1;
+    public static BukkitTask workerDelayed(Runnable run, long delay) {
+        if (! Global.enabled) return null;
         long ticks = delay / 50;
-        return Global.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(Global.plugin, run, ticks);
+        return Global.plugin.getServer().getScheduler().runTaskLaterAsynchronously(Global.plugin, run, ticks);
     }
 
     public static void cancelTask(int taskId) {
@@ -770,111 +778,36 @@ public class Utils {
         return out;
     }
 
-    public static void checkVersion() {
-        try {
-            String urlStr = Global.plugin.getDescription().getWebsite() + "wiki/VERSION";
-            URL url = new URL(urlStr);
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setInstanceFollowRedirects(true);
-            int statusCode = http.getResponseCode();
-            if (statusCode != 200) {
-                debug("got status %s during plugin version check", statusCode);
-                
-                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                info("!! This may be an outdated version of %s, because I can't actually find the version check API.", Global.pluginName);
-                info("!! Try to find the plugin on Google and upgrade it if needed.");
-                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                
-                http.disconnect();
-                return;
-            }
-            InputStreamReader isr = new InputStreamReader(http.getInputStream());
-            BufferedReader br = new BufferedReader(isr);
-            String content;
-            StringBuilder sb = new StringBuilder();
-            while ((content = br.readLine()) != null)
-                sb.append(content);
-            br.close();
-
-            int myVersion = versionToInt(Global.pluginVersion);
-            boolean iAmBeta = isBetaVersion(Global.pluginVersion);
-
-            Pattern pattern = Pattern.compile("RELEASE:(.+):RELEASE");
-            Matcher matcher = pattern.matcher(sb);
-            if (! matcher.find()) {
-                debug("couldn't find release version string on %s", urlStr);
-                
-                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                info("!! This may be an outdated version of %s, because I can't actually find the version check API.", Global.pluginName);
-                info("!! Try to find the plugin on Google and upgrade it if needed.");
-                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                
-                return;
-            }
-            String releaseVersionStr = matcher.group(1);
-            int releaseVersion = versionToInt(releaseVersionStr);
-
-            pattern = Pattern.compile("BETA:(.+):BETA");
-            matcher = pattern.matcher(sb);
-            String betaVersionStr = matcher.find() ? matcher.group(1) : null;
-            int betaVersion = versionToInt(releaseVersionStr);
-
-            if (releaseVersionStr.equals(Global.pluginVersion)) {
-                debug("plugin is current");
-                return;
-            }
-
-            String upgradeVersion;
-
-            if (iAmBeta) {
-                if (releaseVersion > myVersion)
-                    upgradeVersion = releaseVersionStr;
-                else if (betaVersion > myVersion)
-                    upgradeVersion = betaVersionStr;
-                else {
-                    debug("beta version is current");
-                    return;
-                }
-            } else {
-                if (releaseVersion > myVersion)
-                    upgradeVersion = releaseVersionStr;
-                else {
-                    debug("release version is current");
-                    return;
+    
+    public static void startVersionChecker(final Plugin plugin) {
+        currentVersion = plugin.getDescription().getVersion();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+            public void run() {
+                try {
+                    UpdateChecker updateChecker = new UpdateChecker();
+                    updateChecker.checkUpdate("v" + currentVersion);
+                    latestVersion = updateChecker.getLatestVersion();
+                    if (latestVersion != null) {
+                        latestVersion = "v" + latestVersion;
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
+                                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                info("!! This is an outdated version of %s.", Global.pluginName);
+                                info("!! Please upgrade to %s.", latestVersion);
+                                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                
+                                for (Player p : Bukkit.getOnlinePlayers())
+                                    if (p.hasPermission("trp.update"))
+                                        p.sendMessage(String.format(updateMessage, currentVersion, latestVersion));
+                            }
+                        });
+                    }
+                } catch (Exception ex) {
+                    System.out.print(String.format("[%s] Failed to check for update: %s", Global.pluginName, ex.getMessage()));
                 }
             }
-            info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            info("!! This is an outdated version of %s.", Global.pluginName);
-            info("!! Please upgrade to %s.", upgradeVersion);
-            info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        } catch (UnsupportedEncodingException uee) {
-        } catch (MalformedURLException mue) {
-        } catch (IOException ioe) {
-        }
+        }, 0, (20 * 60 * 60 * 6)); // Check every 6 hours
     }
 
-    private static boolean isBetaVersion(String version) {
-        return version.contains("beta");
-    }
-
-    private static int versionToInt(String version) {
-        if (version == null) return 0;
-        Matcher matcher = Pattern.compile("v?(\\d+)\\.(\\d+)(?:beta)?(\\d+)?").matcher(version);
-        if (! matcher.find()) return 0;
-
-        int major = Integer.parseInt(matcher.group(1));
-        int minor = Integer.parseInt(matcher.group(2));
-        int beta = (matcher.group(3) != null) ? Integer.parseInt(matcher.group(3)) : 0;
-
-        if (beta > 0) {
-            minor--;
-            if (minor < 0) {
-                minor = 99;
-                major--;
-            }
-        }
-        int v = (major * 10000) + (minor * 100) + beta;
-        return v;
-    }
 
 }
