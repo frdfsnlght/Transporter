@@ -778,7 +778,13 @@ public class Utils {
             http.setInstanceFollowRedirects(true);
             int statusCode = http.getResponseCode();
             if (statusCode != 200) {
-                debug("got status %s during plugin version check");
+                debug("got status %s during plugin version check", statusCode);
+                
+                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                info("!! This may be an outdated version of %s, because I can't actually find the version check API.", Global.pluginName);
+                info("!! Try to find the plugin on Google and upgrade it if needed.");
+                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                
                 http.disconnect();
                 return;
             }
@@ -796,7 +802,13 @@ public class Utils {
             Pattern pattern = Pattern.compile("RELEASE:(.+):RELEASE");
             Matcher matcher = pattern.matcher(sb);
             if (! matcher.find()) {
-                debug("couldn't find release version string!");
+                debug("couldn't find release version string on %s", urlStr);
+                
+                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                info("!! This may be an outdated version of %s, because I can't actually find the version check API.", Global.pluginName);
+                info("!! Try to find the plugin on Google and upgrade it if needed.");
+                info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                
                 return;
             }
             String releaseVersionStr = matcher.group(1);
