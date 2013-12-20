@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -314,6 +316,10 @@ public final class Gates {
     }
 
     public static void dumpMaps() {
+        if (!Config.getDebug()) {
+            Utils.info("You need to activate the debug mode first. Use: " + ChatColor.BOLD + "/trp set debug true");
+            return;
+        }
         Utils.debug("portalMap=%s", portalMap);
         Utils.debug("protectionMap=%s", protectionMap);
         Utils.debug("screenMap=%s", screenMap);

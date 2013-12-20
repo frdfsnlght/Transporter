@@ -1,6 +1,6 @@
 name: Transporter
 main: com.frdfsnlght.transporter.Transporter
-version: "8.15"
+version: "8.16"
 authors:
   - frdfsnlght
 website: https://github.com/frdfsnlght/Transporter/

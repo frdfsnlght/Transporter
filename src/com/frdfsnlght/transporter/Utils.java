@@ -545,7 +545,7 @@ public class Utils {
             zipOut.closeEntry();
 
             // add the last DEBUG_LOG_BYTES bytes of the server log
-            file = new File(BukkitBaseFolder, "server.log");
+            file = new File(BukkitBaseFolder, "logs/latest.log");
             in = new FileInputStream(file);
             zipOut.putNextEntry(new ZipEntry(file.getName()));
             if (file.length() > DEBUG_LOG_BYTES) {
@@ -703,7 +703,7 @@ public class Utils {
         debug("debug data file '%s' created successfully", zipFile.getAbsolutePath());
 
         try {
-            URL url = new URL("http://www.frdfsnlght.com/transporter-debug.php");
+            URL url = new URL("http://www.cube-nation.de/transporter/transporter-debug.php");
             debug("submitting to %s", url);
             HttpURLConnection conn = openURL(url);
             conn.setDoInput(true);
