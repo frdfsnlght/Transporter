@@ -22,9 +22,13 @@ import com.frdfsnlght.transporter.command.CommandProcessor;
 import com.frdfsnlght.transporter.net.Network;
 import com.frdfsnlght.transporter.net.VanishHelper;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.Command;
@@ -32,7 +36,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.PluginClassLoader;
 
 
 /**
@@ -99,13 +102,21 @@ public class Transporter extends JavaPlugin {
         Utils.copyFileFromJar("/resources/overviewer/transporterConfig.js", overviewerFolder, false);
 
         // Add all jars in the data folder to our class loader
-        PluginClassLoader classLoader = (PluginClassLoader)getClass().getClassLoader();
-        for (String fileName : dataFolder.list()) {
-            if (fileName.toLowerCase().endsWith(".jar"))
-                try {
-                    classLoader.addURL((new File(dataFolder, fileName)).toURI().toURL());
-                } catch (MalformedURLException mue) {}
-        }
+        URLClassLoader classLoader = (URLClassLoader)getClass().getClassLoader();
+
+        try {
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
+
+            for (String fileName : dataFolder.list()) {
+                if (fileName.toLowerCase().endsWith(".jar"))
+                    try {
+                        method.invoke(classLoader, (new File(dataFolder, fileName)).toURI().toURL());
+                    } catch (IllegalAccessException iae) {
+                    } catch (InvocationTargetException ite) {
+                    } catch (MalformedURLException mue) {}
+            }
+        } catch (NoSuchMethodException nsme) {}
 
         Config.load(ctx);
 
