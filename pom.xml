@@ -41,19 +41,33 @@
       <id>kitteh-repo</id>
       <url>http://repo.kitteh.org/content/groups/public</url>
     </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+    </repository>
   </repositories>
+  <distributionManagement>
+	<repository>
+		<id>de.cube-nation.nexus.release</id>
+		<url>http://nexus.cube-nation.de/content/repositories/releases</url>
+	</repository>
+	<snapshotRepository>
+		<id>de.cube-nation.nexus.snapshot</id>
+		<url>http://nexus.cube-nation.de/content/repositories/snapshots</url>
+	</snapshotRepository>
+  </distributionManagement>
   <dependencies>
       <dependency>
          <groupId>org.bukkit</groupId>
          <artifactId>bukkit</artifactId>
-         <version>1.7.2-R0.1-SNAPSHOT</version>
+         <version>1.8-R0.1-SNAPSHOT</version>
          <type>jar</type>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>net.milkbowl.vault</groupId>
          <artifactId>Vault</artifactId>
-         <version>1.2.22</version>
+         <version>1.5.2</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -77,7 +91,7 @@
       <dependency>
          <groupId>ru.tehkode</groupId>
          <artifactId>PermissionsEx</artifactId>
-         <version>1.19.4</version>
+         <version>1.22.7</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -89,13 +103,13 @@
       <dependency>
          <groupId>org.mcsg.double0negative.tabapi</groupId>
          <artifactId>TabAPI</artifactId>
-         <version>0.1.15</version>
+         <version>B 0.1.15</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>org.kitteh</groupId>
          <artifactId>VanishNoPacket</artifactId>
-         <version>3.16.2-SNAPSHOT</version>
+         <version>3.19.2-SNAPSHOT</version>
          <optional>true</optional>
       </dependency>
   </dependencies>
