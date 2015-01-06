@@ -237,10 +237,7 @@ public final class TabList {
 		if (getShowServerList()) {
             String format = getServerListHeader();
             
-            if (format.indexOf("{c}") != -1) {
-                int allServerCount = Servers.getAll().size() + 1;
-                format = format.replaceAll("\\{c\\}", String.valueOf(allServerCount));
-            }
+            format = addArgs(format);
             
             if (! format.isEmpty()) {
                 pos = setCells(screen, pos, format, 9999);
@@ -256,11 +253,7 @@ public final class TabList {
 		if (getShowPlayerList()) {
             String format = getPlayerListHeader();
             
-            if (format.indexOf("{c}") != -1) {
-                int allPlayerCount = Global.plugin.getServer().getOnlinePlayers().length;
-                for (Server server : Servers.getAll()) allPlayerCount += server.getRemotePlayers().size();
-                format = format.replaceAll("\\{c\\}", String.valueOf(allPlayerCount));
-            }
+            format = addArgs(format);
             
             if (! format.isEmpty()) {
                 pos = setCells(screen, pos, format, 9999);
@@ -286,6 +279,21 @@ public final class TabList {
         return screen;
 	}
     
+    private static String addArgs(String format) {
+        if (format.indexOf("{p}") != -1) {
+            int allPlayerCount = Global.plugin.getServer().getOnlinePlayers().length;
+            for (Server server : Servers.getAll()) allPlayerCount += server.getRemotePlayers().size();
+            format = format.replaceAll("\\{p\\}", String.valueOf(allPlayerCount));
+        }
+        
+        if (format.indexOf("{s}") != -1) {
+            int allServerCount = Servers.getAll().size() + 1;
+            format = format.replaceAll("\\{s\\}", String.valueOf(allServerCount));
+        }
+        
+        return format;
+    }
+
     private static boolean isVanished(String playerName) {
         try {
             // use helper/wrapper class, so it will be ignored when Vanish is not available
@@ -352,7 +360,7 @@ public final class TabList {
             format = Chat.colorize(format);
             if (format.length() <= 13)
                 return setCells(screen, pos, format, connected ? 0 : -1);
-            n = n.substring(0, n.length() - 4) + "...";
+            n = n.substring(0, n.length() - 3) + "..";
         }
     }
 

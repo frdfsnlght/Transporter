@@ -99,12 +99,18 @@ public class Transporter extends JavaPlugin {
         Utils.copyFileFromJar("/resources/overviewer/transporterConfig.js", overviewerFolder, false);
 
         // Add all jars in the data folder to our class loader
-        PluginClassLoader classLoader = (PluginClassLoader)getClass().getClassLoader();
-        for (String fileName : dataFolder.list()) {
-            if (fileName.toLowerCase().endsWith(".jar"))
-                try {
-                    classLoader.addURL((new File(dataFolder, fileName)).toURI().toURL());
-                } catch (MalformedURLException mue) {}
+        try {
+            PluginClassLoader classLoader = (PluginClassLoader)getClass().getClassLoader();
+            for (String fileName : dataFolder.list()) {
+                if (fileName.toLowerCase().endsWith(".jar"))
+                    try {
+                        classLoader.addURL((new File(dataFolder, fileName)).toURI().toURL());
+                    } catch (MalformedURLException mue) {}
+            }
+        } catch (Exception e) {
+            getLogger().warning("Exception: Coult not use PluginClassLoader to load external jars.");
+        } catch (Error e) {
+            getLogger().warning("Error: Coult not use PluginClassLoader to load external jars.");
         }
 
         Config.load(ctx);
