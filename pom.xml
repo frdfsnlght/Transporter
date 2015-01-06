@@ -103,7 +103,7 @@
       <dependency>
          <groupId>org.mcsg.double0negative.tabapi</groupId>
          <artifactId>TabAPI</artifactId>
-         <version>B 0.1.15</version>
+         <version>0.1.15</version>
          <optional>true</optional>
       </dependency>
       <dependency>
