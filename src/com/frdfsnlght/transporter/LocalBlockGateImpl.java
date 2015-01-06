@@ -234,7 +234,6 @@ public final class LocalBlockGateImpl extends LocalGateImpl implements LocalBloc
         updateScreens();
     }
 
-    @Override
     public void rebuild() {
         for (GateBlock gb : blocks) {
             if (! gb.getDetail().isBuildable()) continue;
@@ -353,7 +352,6 @@ public final class LocalBlockGateImpl extends LocalGateImpl implements LocalBloc
 
     // Custom methods
 
-    @Override
     public String getDesignName() {
         return designName;
     }
@@ -522,12 +520,10 @@ public final class LocalBlockGateImpl extends LocalGateImpl implements LocalBloc
 
     /* Begin options */
 
-    @Override
     public boolean getRestoreOnClose() {
         return restoreOnClose;
     }
 
-    @Override
     public void setRestoreOnClose(boolean b) {
         restoreOnClose = b;
         dirty = true;

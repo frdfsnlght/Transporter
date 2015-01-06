@@ -360,7 +360,6 @@ public final class PlayerListenerImpl implements Listener {
         Utils.debug("chat event is canceled: %s", event.isCancelled());
         if (event.isAsynchronous())
             Utils.fire(new Runnable() {
-                @Override
                 public void run() {
                     Chat.send(event.getPlayer(), event.getMessage(), event.getFormat());
                 }

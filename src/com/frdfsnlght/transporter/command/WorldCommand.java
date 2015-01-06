@@ -72,7 +72,6 @@ public class WorldCommand extends TrpCommandProcessor {
             Permissions.require(ctx.getPlayer(), "trp.world.list");
             List<LocalWorldImpl> worlds = Worlds.getAll();
             Collections.sort(worlds, new Comparator<LocalWorldImpl>() {
-                @Override
                 public int compare(LocalWorldImpl a, LocalWorldImpl b) {
                     return a.getName().compareToIgnoreCase(b.getName());
                 }

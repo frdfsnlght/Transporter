@@ -77,7 +77,6 @@ public class DesignCommand extends TrpCommandProcessor {
             else {
                 List<Design> designs = Designs.getAll();
                 Collections.sort(designs, new Comparator<Design>() {
-                    @Override
                     public int compare(Design a, Design b) {
                         return a.getName().compareToIgnoreCase(b.getName());
                     }

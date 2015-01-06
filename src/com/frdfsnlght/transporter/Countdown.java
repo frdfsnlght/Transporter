@@ -86,7 +86,6 @@ public final class Countdown {
 
     private void schedule() {
         timer = Utils.fireDelayed(new Runnable() {
-            @Override
             public void run() {
                 tick();
             }

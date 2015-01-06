@@ -53,7 +53,6 @@ public final class TestGate extends LocalGateImpl {
     @Override
     public Location getSpawnLocation(Location fromLoc, BlockFace fromDirection) { return null; }
 
-    @Override
     public void rebuild() {}
 
     @Override

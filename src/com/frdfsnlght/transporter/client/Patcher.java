@@ -436,7 +436,6 @@ public final class Patcher extends javax.swing.JFrame {
         patchButton.setEnabled(false);
         closeButton.setEnabled(false);
         Thread t = new Thread(new Runnable() {
-            @Override
             public void run() {
                 try {
                     // copy the jar file
@@ -524,7 +523,6 @@ public final class Patcher extends javax.swing.JFrame {
                     append("What the hell just happened? Patch process aborted!");
                 }
                 SwingUtilities.invokeLater(new Runnable() {
-                    @Override
                     public void run() {
                         refreshClientInfo(jarFile.getPath());
                     }
@@ -544,7 +542,6 @@ public final class Patcher extends javax.swing.JFrame {
 
     private void append(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 output.append(msg + "\n");
             }
@@ -718,7 +715,6 @@ public final class Patcher extends javax.swing.JFrame {
         } catch (Exception e) {}
 
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 Patcher patcher = new Patcher();
                 patcher.setLocationRelativeTo(null);

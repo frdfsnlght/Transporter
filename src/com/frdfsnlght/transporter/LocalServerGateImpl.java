@@ -73,7 +73,6 @@ public final class LocalServerGateImpl extends LocalGateImpl implements LocalSer
     @Override
     public void onProtect(Location loc) {}
 
-    @Override
     public void rebuild() {}
 
     @Override

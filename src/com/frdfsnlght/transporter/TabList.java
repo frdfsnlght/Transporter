@@ -47,11 +47,9 @@ public final class TabList {
         OPTIONS.add("playerListHeader");
 
         options = new Options(TabList.class, OPTIONS, "trp.tablist", new OptionsListener() {
-            @Override
             public void onOptionSet(Context ctx, String name, String value) {
                 ctx.sendLog("tab list option '%s' set to '%s'", name, value);
             }
-            @Override
             public String getOptionPermission(Context ctx, String name) {
                 return name;
             }
@@ -69,7 +67,6 @@ public final class TabList {
             updateAllNow();
         else
             Utils.fire(new Runnable() {
-                @Override
                 public void run() {
                     updateAllNow();
                 }
@@ -83,7 +80,6 @@ public final class TabList {
             updatePlayerNow(player);
         else
             Utils.fire(new Runnable() {
-                @Override
                 public void run() {
                     updatePlayerNow(player);
                 }
@@ -94,7 +90,6 @@ public final class TabList {
     public static void startPlayer(final Player player) {
         if (! tabAPIAvailable()) return;
         Utils.fireDelayed(new Runnable() {
-            @Override
             public void run() {
                 TabAPI.setPriority(Global.plugin, player, getPriority());
                 updateAllNow();
@@ -107,7 +102,6 @@ public final class TabList {
         if (! tabAPIAvailable()) return;
         TabAPI.setPriority(Global.plugin, player, -2);
         Utils.fireDelayed(new Runnable() {
-            @Override
             public void run() {
                 updateAllNow();
             }
@@ -244,7 +238,7 @@ public final class TabList {
                 pos = newLine(pos, false);
             }
 
-            pos = setServer(screen, pos, getLocalServerName(), Global.plugin.getServer().getOnlinePlayers().length, true);
+            pos = setServer(screen, pos, getLocalServerName(), Global.plugin.getServer().getOnlinePlayers().size(), true);
             for (Server server : Servers.getAll())
                 pos = setServer(screen, pos, server.getName(), server.getRemotePlayers().size(), server.isConnected());
             pos = newLine(pos, false);
@@ -281,7 +275,7 @@ public final class TabList {
     
     private static String addArgs(String format) {
         if (format.indexOf("{p}") != -1) {
-            int allPlayerCount = Global.plugin.getServer().getOnlinePlayers().length;
+            int allPlayerCount = Global.plugin.getServer().getOnlinePlayers().size();
             for (Server server : Servers.getAll()) allPlayerCount += server.getRemotePlayers().size();
             format = format.replaceAll("\\{p\\}", String.valueOf(allPlayerCount));
         }

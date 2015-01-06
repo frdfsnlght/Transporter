@@ -336,17 +336,14 @@ public final class ReservationImpl implements Reservation {
 
     /* Reservation interface */
 
-    @Override
     public Entity getEntity() {
         return entity;
     }
 
-    @Override
     public Gate getDepartureGate() {
         return fromGate;
     }
 
-    @Override
     public Gate getArrivalGate() {
         return toGate;
     }
@@ -527,7 +524,6 @@ public final class ReservationImpl implements Reservation {
                     // setup delayed task to remove the reservation on this side if it doesn't work out
                     final ReservationImpl me = this;
                     Utils.fireDelayed(new Runnable() {
-                        @Override
                         public void run() {
                             if (! remove(me)) return;
                             Utils.warning("reservation for %s to %s timed out", getTraveler(), getDestination());
@@ -580,7 +576,6 @@ public final class ReservationImpl implements Reservation {
                 // set up a delayed task to cancel the arrival if they never arrive
                 final ReservationImpl res = this;
                 Utils.fireDelayed(new Runnable() {
-                    @Override
                     public void run() {
                         if (! remove(res)) return;
                         Utils.warning("reservation for %s to %s timed out", getTraveler(), getDestination());

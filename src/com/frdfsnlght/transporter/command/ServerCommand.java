@@ -76,7 +76,6 @@ public class ServerCommand extends TrpCommandProcessor {
             else {
                 List<Server> servers = Servers.getAll();
                 Collections.sort(servers, new Comparator<Server>() {
-                    @Override
                     public int compare(Server a, Server b) {
                         return a.getName().compareToIgnoreCase(b.getName());
                     }

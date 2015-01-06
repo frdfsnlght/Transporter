@@ -63,7 +63,6 @@ public final class Servers {
         servers.put(server.getName(), server);
         if (server.isEnabled())
             Utils.fireDelayed(new Runnable() {
-                @Override
                 public void run() {
                     server.connect();
                 }
@@ -86,7 +85,6 @@ public final class Servers {
         for (final Server server : servers.values()) {
             if ((! server.isConnectionConnected()) && server.isEnabled())
                 Utils.fireDelayed(new Runnable() {
-                    @Override
                     public void run() {
                         server.connect();
                     }

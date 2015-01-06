@@ -155,7 +155,6 @@ public final class Connection {
         Utils.info("accepted a connection from %s", getName());
         state = State.HANDSHAKE;
         Utils.fireDelayed(new Runnable() {
-            @Override
             public void run() {
                 if (state == State.HANDSHAKE) {
                     Utils.warning("closing connection from %s because no handshake was received", getName());

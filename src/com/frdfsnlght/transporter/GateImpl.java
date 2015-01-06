@@ -30,7 +30,6 @@ public abstract class GateImpl implements Gate {
 
     protected String name;
 
-    @Override
     public String getName() {
         return name;
     }

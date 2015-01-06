@@ -52,15 +52,12 @@ public abstract class RemoteGateImpl extends GateImpl implements RemoteGate {
         this.hidden = hidden;
     }
 
-    @Override
     public abstract GateType getType();
 
-    @Override
     public String getLocalName() {
         return worldName + "." + getName();
     }
 
-    @Override
     public String getFullName() {
         return server.getName() + "." + getLocalName();
     }
@@ -75,12 +72,10 @@ public abstract class RemoteGateImpl extends GateImpl implements RemoteGate {
         return getFullName();
     }
 
-    @Override
     public RemoteWorld getRemoteWorld() {
         return server.getRemoteWorld(worldName);
     }
 
-    @Override
     public RemoteServer getRemoteServer() {
         return server;
     }
@@ -102,7 +97,6 @@ public abstract class RemoteGateImpl extends GateImpl implements RemoteGate {
         server.sendGateDetach(this, (LocalGateImpl)origin);
     }
 
-    @Override
     public boolean getHidden() {
         return hidden;
     }

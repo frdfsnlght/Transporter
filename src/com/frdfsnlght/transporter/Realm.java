@@ -52,11 +52,9 @@ public final class Realm {
         OPTIONS.add("kickWhenServerOfflineFormat");
 
         options = new Options(Realm.class, OPTIONS, "trp.realm", new OptionsListener() {
-            @Override
             public void onOptionSet(Context ctx, String name, String value) {
                 ctx.send("realm option '%s' set to '%s'", name, value);
             }
-            @Override
             public String getOptionPermission(Context ctx, String name) {
                 return name;
             }

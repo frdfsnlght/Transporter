@@ -88,7 +88,6 @@ public final class LocalPlayerPMEvent extends Event implements Cancellable {
      *
      * @param b     true to cancel the event
      */
-    @Override
     public void setCancelled(boolean b) {
         cancelled = b;
     }
@@ -98,7 +97,6 @@ public final class LocalPlayerPMEvent extends Event implements Cancellable {
      *
      * @return true if the event is canceled
      */
-    @Override
     public boolean isCancelled() {
         return cancelled;
     }

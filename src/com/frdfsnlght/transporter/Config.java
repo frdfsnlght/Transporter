@@ -80,11 +80,9 @@ public final class Config {
         OPTIONS.add("resendLostPlayers");
 
         options = new Options(Config.class, OPTIONS, "trp", new OptionsListener() {
-            @Override
             public void onOptionSet(Context ctx, String name, String value) {
                 ctx.sendLog("global option '%s' set to '%s'", name, value);
             }
-            @Override
             public String getOptionPermission(Context ctx, String name) {
                 return name;
             }

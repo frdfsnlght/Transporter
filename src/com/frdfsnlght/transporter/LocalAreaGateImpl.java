@@ -240,7 +240,6 @@ public final class LocalAreaGateImpl extends LocalGateImpl implements LocalAreaG
     @Override
     public void onProtect(Location loc) {}
 
-    @Override
     public void rebuild() {
         if (box) showBox();
     }
@@ -323,7 +322,6 @@ public final class LocalAreaGateImpl extends LocalGateImpl implements LocalAreaG
 
     // Custom methods
 
-    @Override
     public void resize(int num, ExpandDirection dir) {
         Bounds bounds = new Bounds(p1, p2);
         Location min = bounds.min.toLocation(world);
@@ -461,111 +459,91 @@ public final class LocalAreaGateImpl extends LocalGateImpl implements LocalAreaG
 
     /* Begin options */
 
-    @Override
     public String getP1() {
         return encodeLocation(p1);
     }
 
-    @Override
     public void setP1(String s) {
         setCorners(parseLocation(s), p2);
         dirty = true;
     }
 
-    @Override
     public Location getP1Location() {
         return p1.clone();
     }
 
-    @Override
     public void setP1Location(Location l) {
         setCorners(new Location(world, l.getBlockX(), l.getBlockY(), l.getBlockZ()), p2);
         dirty = true;
     }
 
-    @Override
     public String getP2() {
         return encodeLocation(p2);
     }
 
-    @Override
     public void setP2(String s) {
         setCorners(p1, parseLocation(s));
         dirty = true;
     }
 
-    @Override
     public Location getP2Location() {
         return p2.clone();
     }
 
-    @Override
     public void setP2Location(Location l) {
         setCorners(p1, new Location(world, l.getBlockX(), l.getBlockY(), l.getBlockZ()));
         dirty = true;
     }
 
-    @Override
     public SpawnDirection getSpawnDirection() {
         return spawnDirection;
     }
 
-    @Override
     public void setSpawnDirection(SpawnDirection dir) {
         spawnDirection = dir;
         dirty = true;
     }
 
-    @Override
     public boolean getSpawnSolid() {
         return spawnSolid;
     }
 
-    @Override
     public void setSpawnAir(boolean b) {
         spawnAir = b;
         dirty = true;
     }
 
-    @Override
     public boolean getSpawnAir() {
         return spawnAir;
     }
 
-    @Override
     public void setSpawnSolid(boolean b) {
         spawnSolid = b;
         dirty = true;
     }
 
-    @Override
     public boolean getSpawnLiquid() {
         return spawnLiquid;
     }
 
-    @Override
     public void setSpawnLiquid(boolean b) {
         spawnLiquid = b;
         dirty = true;
     }
 
-    @Override
     public SpawnSearch getSpawnSearch() {
         return spawnSearch;
     }
 
-    @Override
     public void setSpawnSearch(SpawnSearch s) {
         spawnSearch = s;
         dirty = true;
     }
 
-    @Override
     public boolean getBox() {
         return box;
     }
 
-    @Override
     public void setBox(boolean b) {
         if (box) hideBox();
         box = b;
@@ -577,12 +555,10 @@ public final class LocalAreaGateImpl extends LocalGateImpl implements LocalAreaG
             Gates.removeProtectionVolume(this);
     }
 
-    @Override
     public Material getBoxMaterial() {
         return boxMaterial;
     }
 
-    @Override
     public void setBoxMaterial(Material m) {
         boxMaterial = m;
         if (box) showBox();

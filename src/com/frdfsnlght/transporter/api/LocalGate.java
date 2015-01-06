@@ -1066,7 +1066,6 @@ public interface LocalGate extends Gate {
      *
      * @return      the option value
      */
-    @Override
     public boolean getHidden();
 
     /**

@@ -256,75 +256,75 @@ public final class Server implements OptionsListener, RemoteServer {
 
     /* RemoteServer interface */
 
-    @Override
+    
     public String getName() {
         return name;
     }
 
-    @Override
+    
     public Set<RemotePlayer> getRemotePlayers() {
         return new HashSet<RemotePlayer>(remotePlayers.values());
     }
 
-    @Override
+    
     public Set<RemoteWorld> getRemoteWorlds() {
         return new HashSet<RemoteWorld>(remoteWorlds.values());
     }
 
-    @Override
+    
     public Set<RemoteGate> getRemoteGates() {
         return new HashSet<RemoteGate>(remoteGates.values());
     }
 
-    @Override
+    
     public RemoteWorld getRemoteWorld(String worldName) {
         return remoteWorlds.get(worldName);
     }
 
-    @Override
+    
     public RemoteGate getRemoteGate(String gateName) {
         return remoteGates.get(gateName);
     }
 
-    @Override
+    
     public boolean isConnected() {
         return readyForAPI;
     }
 
-    @Override
+    
     public void broadcast(final Callback<Integer> cb, String message, String permission) {
         TypeMap args = new TypeMap();
         args.put("message", message);
         args.put("permission", permission);
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getInt("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "broadcast", args);
     }
 
-    @Override
+    
     public void broadcastMessage(final Callback<Integer> cb, String message) {
         TypeMap args = new TypeMap();
         args.put("message", message);
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getInt("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "broadcastMessage", args);
     }
 
-    @Override
+    
     public void dispatchCommand(final Callback<Boolean> cb, CommandSender sender, String commandLine) {
         TypeMap args = new TypeMap();
         if ((sender instanceof ConsoleCommandSender) || (sender instanceof RemoteConsoleCommandSender))
@@ -335,87 +335,87 @@ public final class Server implements OptionsListener, RemoteServer {
         }
         args.put("commandLine", commandLine);
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getBoolean("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "dispatchCommand", args);
     }
 
-    @Override
+    
     public void sendRemoteRequest(final Callback<TypeMap> cb, TypeMap request) {
         TypeMap args = new TypeMap();
         args.put("request", request);
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getMap("response"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "remoteRequest", args);
     }
 
-    @Override
+    
     public void getDefaultGameMode(final Callback<GameMode> cb) {
         TypeMap args = new TypeMap();
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(Utils.valueOf(GameMode.class, m.getString("result")));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "getDefaultGameMode", args);
     }
 
-    @Override
+    
     public void getName(final Callback<String> cb) {
         TypeMap args = new TypeMap();
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getString("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "getName", args);
     }
 
-    @Override
+    
     public void getServerId(final Callback<String> cb) {
         TypeMap args = new TypeMap();
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getString("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "server", "getServerId", args);
     }
 
-    @Override
+    
     public void getVersion(final Callback<String> cb) {
         TypeMap args = new TypeMap();
         sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getString("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
@@ -449,24 +449,24 @@ public final class Server implements OptionsListener, RemoteServer {
 
     /* Begin options */
 
-    @Override
+    
     public String getKey() {
         return key;
     }
 
-    @Override
+    
     public void setKey(String key) {
         if ((key == null) || key.isEmpty())
             throw new IllegalArgumentException("key is required");
         this.key = key;
     }
 
-    @Override
+    
     public String getPublicAddress() {
         return publicAddress;
     }
 
-    @Override
+    
     public void setPublicAddress(String address) {
         if (address == null)
             throw new IllegalArgumentException("publicAddress is required");
@@ -478,12 +478,12 @@ public final class Server implements OptionsListener, RemoteServer {
         publicAddress = address;
     }
 
-    @Override
+    
     public String getPrivateAddress() {
         return privateAddress;
     }
 
-    @Override
+    
     public void setPrivateAddress(String address) {
         if (address == null)
             throw new IllegalArgumentException("privateAddress is required");
@@ -495,12 +495,12 @@ public final class Server implements OptionsListener, RemoteServer {
         privateAddress = address;
     }
 
-    @Override
+    
     public String getChatFormat() {
         return chatFormat;
     }
 
-    @Override
+    
     public void setChatFormat(String s) {
         if (s != null) {
             if (s.isEmpty() || s.equals("-")) s = null;
@@ -508,12 +508,12 @@ public final class Server implements OptionsListener, RemoteServer {
         chatFormat = s;
     }
 
-    @Override
+    
     public String getPmFormat() {
         return pmFormat;
     }
 
-    @Override
+    
     public void setPmFormat(String s) {
         if (s != null) {
             if (s.isEmpty() || s.equals("-")) s = null;
@@ -521,22 +521,22 @@ public final class Server implements OptionsListener, RemoteServer {
         pmFormat = s;
     }
 
-    @Override
+    
     public boolean getSendChat() {
         return sendChat;
     }
 
-    @Override
+    
     public void setSendChat(boolean b) {
         sendChat = b;
     }
 
-    @Override
+    
     public String getSendChatFilter() {
         return sendChatFilter;
     }
 
-    @Override
+    
     public void setSendChatFilter(String s) {
         if (s != null) {
             if (s.isEmpty() || s.equals("-")) s = null;
@@ -550,12 +550,12 @@ public final class Server implements OptionsListener, RemoteServer {
         sendChatFilter = s;
     }
 
-    @Override
+    
     public String getSendChatFormatFilter() {
         return sendChatFormatFilter;
     }
 
-    @Override
+    
     public void setSendChatFormatFilter(String s) {
         if (s != null) {
             if (s.isEmpty() || s.equals("-")) s = null;
@@ -569,22 +569,22 @@ public final class Server implements OptionsListener, RemoteServer {
         sendChatFormatFilter = s;
     }
 
-    @Override
+    
     public boolean getReceiveChat() {
         return receiveChat;
     }
 
-    @Override
+    
     public void setReceiveChat(boolean b) {
         receiveChat = b;
     }
 
-    @Override
+    
     public String getReceiveChatFilter() {
         return receiveChatFilter;
     }
 
-    @Override
+    
     public void setReceiveChatFilter(String s) {
         if (s != null) {
             if (s.isEmpty() || s.equals("-")) s = null;
@@ -598,22 +598,22 @@ public final class Server implements OptionsListener, RemoteServer {
         receiveChatFilter = s;
     }
 
-    @Override
+    
     public boolean getAnnouncePlayers() {
         return announcePlayers;
     }
 
-    @Override
+    
     public void setAnnouncePlayers(boolean b) {
         announcePlayers = b;
     }
 
-    @Override
+    
     public String getPlayerListFormat() {
         return playerListFormat;
     }
 
-    @Override
+    
     public void setPlayerListFormat(String s) {
         if (s != null) {
             if (s.isEmpty() || (s.equals("-"))) s = "";
@@ -622,22 +622,22 @@ public final class Server implements OptionsListener, RemoteServer {
         playerListFormat = s;
     }
 
-    @Override
+    
     public boolean getMExecTarget() {
         return mExecTarget;
     }
 
-    @Override
+    
     public void setMExecTarget(boolean b) {
         mExecTarget = b;
     }
 
-    @Override
+    
     public boolean getAllowRemoteCommands() {
         return allowRemoteCommands;
     }
 
-    @Override
+    
     public void setAllowRemoteCommands(boolean b) {
         allowRemoteCommands = b;
     }
@@ -654,12 +654,12 @@ public final class Server implements OptionsListener, RemoteServer {
         options.setOption(ctx, name, value);
     }
 
-    @Override
+    
     public void onOptionSet(Context ctx, String name, String value) {
         ctx.send("option '%s' set to '%s' for server '%s'", name, value, getName());
     }
 
-    @Override
+    
     public String getOptionPermission(Context ctx, String name) {
         return name;
     }
@@ -668,12 +668,12 @@ public final class Server implements OptionsListener, RemoteServer {
 
     /* Custom methods */
 
-    @Override
+    
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Override
+    
     public void setEnabled(boolean en) {
         enabled = en;
         if (enabled)
@@ -756,7 +756,7 @@ public final class Server implements OptionsListener, RemoteServer {
         return remoteBungeeServer;
     }
 
-    @Override
+    
     public TransferMethod getTransferMethod() {
         if ((remoteCluster != null) &&
             remoteCluster.equals(Network.getClusterName()) &&
@@ -765,7 +765,7 @@ public final class Server implements OptionsListener, RemoteServer {
         return TransferMethod.ClientKick;
     }
 
-    @Override
+    
     public String getKickMessage(InetSocketAddress clientAddress) {
         String addr = getReconnectAddressForClient(clientAddress);
         if (addr == null) {
@@ -870,7 +870,7 @@ public final class Server implements OptionsListener, RemoteServer {
             if (! connectionMessagesSuppressed())
                 Utils.info("will attempt to reconnect to '%s' in about %d seconds", getName(), (time / 1000));
             reconnectTask = Utils.fireDelayed(new Runnable() {
-                @Override
+                
                 public void run() {
                     reconnectTask = -1;
                     connect();
@@ -927,7 +927,7 @@ public final class Server implements OptionsListener, RemoteServer {
         cancelOutbound();
         Utils.info("connected to '%s' (%s), running v%s", getName(), connection.getName(), remoteVersion);
         Utils.fire(new Runnable() {
-            @Override
+            
             public void run() {
                 receiveRefresh(null);
             }
@@ -950,7 +950,7 @@ public final class Server implements OptionsListener, RemoteServer {
             reconnect();
             final Server me = this;
             Utils.fire(new Runnable() {
-                @Override
+                
                 public void run() {
                     RemoteServerDisconnectEvent event = new RemoteServerDisconnectEvent(me);
                     Global.plugin.getServer().getPluginManager().callEvent(event);
@@ -977,7 +977,7 @@ public final class Server implements OptionsListener, RemoteServer {
         }
         Utils.debug("received command '%s' from %s", command, getName());
         Utils.fire(new Runnable() {
-            @Override
+            
             public void run() {
                 receiveMessage(message, command);
             }
@@ -1243,7 +1243,7 @@ public final class Server implements OptionsListener, RemoteServer {
 
         // setup delayed task to timeout the request on this side if we don't get a response
         Utils.fireDelayed(new Runnable() {
-            @Override
+            
             public void run() {
                 Callback<TypeMap> cb = requests.remove(rid);
                 if (cb != null) {
@@ -1907,7 +1907,7 @@ public final class Server implements OptionsListener, RemoteServer {
     private void sendMessage(final TypeMap message) {
         Utils.debug("sending command '%s' to %s", message.getString("command", "<none>"), name);
         Utils.worker(new Runnable() {
-            @Override
+            
             public void run() {
                 if (connection != null)
                     connection.sendMessage(message, true);
@@ -2079,7 +2079,7 @@ public final class Server implements OptionsListener, RemoteServer {
         return format;
     }
 
-    @Override
+    
     public String toString() {
         StringBuilder buf = new StringBuilder("Server[");
         buf.append(name).append(",");

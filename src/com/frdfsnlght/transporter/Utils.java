@@ -240,7 +240,7 @@ public class Utils {
 
     public static File[] listYAMLFiles(File folder) {
         return folder.listFiles(new FilenameFilter() {
-            @Override
+            
             public boolean accept(File dir, String name) {
                 return name.endsWith(".yml");
             }
@@ -447,7 +447,7 @@ public class Utils {
 
     public static void schedulePlayerKick(final Player player, final String message) {
         fire(new Runnable() {
-            @Override
+            
             public void run() {
                 debug("kicking player '%s' @%s: %s", player.getName(), player.getAddress().getAddress().getHostAddress(), message);
                 player.kickPlayer(message);
@@ -510,7 +510,7 @@ public class Utils {
         if (! isWorkerThread()) {
             debug("scheduling debug submission");
             worker(new Runnable() {
-                @Override
+                
                 public void run() {
                     submitDebug(id);
                 }
@@ -571,9 +571,9 @@ public class Utils {
             writer.println();
 
             // list of players...
-            List<Player> players = Arrays.asList(Global.plugin.getServer().getOnlinePlayers());
+            List<Player> players = Arrays.asList((Player[])Global.plugin.getServer().getOnlinePlayers().toArray());
             Collections.sort(players, new Comparator<Player>() {
-                @Override
+                
                 public int compare(Player a, Player b) {
                     return a.getName().compareToIgnoreCase(b.getName());
                 }
@@ -586,7 +586,7 @@ public class Utils {
             // list of worlds...
             List<World> worlds = Global.plugin.getServer().getWorlds();
             Collections.sort(worlds, new Comparator<World>() {
-                @Override
+                
                 public int compare(World a, World b) {
                     return a.getName().compareToIgnoreCase(b.getName());
                 }
@@ -599,7 +599,7 @@ public class Utils {
             // list of servers...
             List<Server> servers = Servers.getAll();
             Collections.sort(servers, new Comparator<Server>() {
-                @Override
+                
                 public int compare(Server a, Server b) {
                     return a.getName().compareToIgnoreCase(b.getName());
                 }
@@ -645,7 +645,7 @@ public class Utils {
             // local gates...
             List<LocalGateImpl> gates = new ArrayList<LocalGateImpl>(Gates.getLocalGates());
             Collections.sort(gates, new Comparator<LocalGateImpl>() {
-                @Override
+                
                 public int compare(LocalGateImpl a, LocalGateImpl b) {
                     return a.getFullName().compareToIgnoreCase(b.getFullName());
                 }

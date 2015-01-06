@@ -59,22 +59,22 @@ public final class RemotePlayerImpl implements RemotePlayer {
         return f;
     }
 
-    @Override
+    
     public String getName() {
         return name;
     }
 
-    @Override
+    
     public String getDisplayName() {
         return displayName;
     }
 
-    @Override
+    
     public RemoteWorld getRemoteWorld() {
         return server.getRemoteWorld(worldName);
     }
 
-    @Override
+    
     public String getPrefix() {
         return prefix;
     }
@@ -83,7 +83,7 @@ public final class RemotePlayerImpl implements RemotePlayer {
         this.prefix = prefix;
     }
 
-    @Override
+    
     public String getSuffix() {
         return suffix;
     }
@@ -101,64 +101,64 @@ public final class RemotePlayerImpl implements RemotePlayer {
         worldName = world.getName();
     }
 
-    @Override
+    
     public RemoteServer getRemoteServer() {
         return server;
     }
 
-    @Override
+    
     public void getRemoteLocation(final Callback<RemoteLocation> cb) {
         TypeMap args = new TypeMap();
         args.put("player", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 TypeMap locMsg = m.getMap("result");
                 RemoteLocation loc = new RemoteLocation(server, server.getRemoteWorld(locMsg.getString("world")), locMsg.getDouble("x"), locMsg.getDouble("y"), locMsg.getDouble("z"));
                 cb.onSuccess(loc);
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 cb.onFailure(re);
             }
         }, "player", "getLocation", args);
     }
 
-    @Override
+    
     public void sendMessage(final Callback<Void> cb, String msg) {
         TypeMap args = new TypeMap();
         args.put("player", name);
         args.put("message", msg);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(null);
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "player", "sendMessage", args);
     }
 
-    @Override
+    
     public void sendRawMessage(final Callback<Void> cb, String msg) {
         TypeMap args = new TypeMap();
         args.put("player", name);
         args.put("message", msg);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(null);
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "player", "sendRawMessage", args);
     }
 
-    @Override
+    
     public void sendPM(Player fromPlayer, String message) {
         server.sendPrivateMessage(fromPlayer, this, message);
     }

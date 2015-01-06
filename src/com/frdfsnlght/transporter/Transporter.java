@@ -142,7 +142,6 @@ public class Transporter extends JavaPlugin {
         if (vanishHelper != null) pm.registerEvents(vanishHelper, this);
 
         Runnable loadWorlds = new Runnable() {
-            @Override
             public void run() {
                 Worlds.autoLoad(ctx);
                 Markers.update();

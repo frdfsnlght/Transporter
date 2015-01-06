@@ -121,7 +121,6 @@ public class GateCommand extends TrpCommandProcessor {
                 ctx.send("there are no local gates");
             else {
                 Collections.sort(localGates, new Comparator<LocalGateImpl>() {
-                    @Override
                     public int compare(LocalGateImpl a, LocalGateImpl b) {
                         return a.getLocalName().compareToIgnoreCase(b.getLocalName());
                     }
@@ -138,7 +137,6 @@ public class GateCommand extends TrpCommandProcessor {
                 ctx.send("there are no remote gates");
             else {
                 Collections.sort(remoteGates, new Comparator<RemoteGateImpl>() {
-                    @Override
                     public int compare(RemoteGateImpl a, RemoteGateImpl b) {
                         return a.getFullName().compareToIgnoreCase(b.getFullName());
                     }

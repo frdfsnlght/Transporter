@@ -85,7 +85,7 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
         }
     }
 
-    @Override
+    
     public String getName() {
         return name;
     }
@@ -100,12 +100,12 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
 
     /* Begin options */
 
-    @Override
+    
     public Environment getEnvironment() {
         return environment;
     }
 
-    @Override
+    
     public void setEnvironment(Environment environment) {
         if (environment == null) environment = Environment.NORMAL;
         this.environment = environment;
@@ -129,36 +129,36 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
     }
 */
 
-    @Override
+    
     public String getGenerator() {
         return generator;
     }
 
-    @Override
+    
     public void setGenerator(String generator) {
         if ((generator != null) &&
             (generator.isEmpty() || generator.equals("-"))) generator = null;
         this.generator = generator;
     }
 
-    @Override
+    
     public String getSeed() {
         return seed;
     }
 
-    @Override
+    
     public void setSeed(String seed) {
         if ((seed != null) &&
             (seed.isEmpty() || seed.equals("-"))) seed = null;
         this.seed = seed;
     }
 
-    @Override
+    
     public boolean getAutoLoad() {
         return autoLoad;
     }
 
-    @Override
+    
     public void setAutoLoad(boolean b) {
         autoLoad = b;
     }
@@ -175,12 +175,12 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
         options.setOption(ctx, name, value);
     }
 
-    @Override
+    
     public void onOptionSet(Context ctx, String name, String value) {
         ctx.send("option '%s' set to '%s' for world '%s'", name, value, getName());
     }
 
-    @Override
+    
     public String getOptionPermission(Context ctx, String name) {
         return name;
     }
@@ -197,7 +197,7 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
         return node;
     }
 
-    @Override
+    
     public World getWorld() {
         return Global.plugin.getServer().getWorld(name);
     }
@@ -241,7 +241,7 @@ public final class LocalWorldImpl implements OptionsListener, LocalWorld {
         return world;
     }
 
-    @Override
+    
     public boolean isLoaded() {
         return getWorld() != null;
     }

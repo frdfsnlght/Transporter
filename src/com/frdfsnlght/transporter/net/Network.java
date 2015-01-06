@@ -81,7 +81,6 @@ public final class Network {
         RESTART_OPTIONS.add("key");
 
         options = new Options(Network.class, OPTIONS, "trp.network", new OptionsListener() {
-            @Override
             public void onOptionSet(Context ctx, String name, String value) {
                 ctx.send("network option '%s' set to '%s'", name, value);
                 if (RESTART_OPTIONS.contains(name)) {
@@ -89,7 +88,6 @@ public final class Network {
                     restart(ctx);
                 }
             }
-            @Override
             public String getOptionPermission(Context ctx, String name) {
                 return name;
             }
@@ -205,7 +203,6 @@ public final class Network {
         }
 
         networkThread = new Thread(new Runnable() {
-            @Override
             public void run() {
                 Network.run();
             }

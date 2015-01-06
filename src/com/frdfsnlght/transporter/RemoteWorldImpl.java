@@ -38,90 +38,90 @@ public final class RemoteWorldImpl implements RemoteWorld {
         this.name = name;
     }
 
-    @Override
+    
     public RemoteServer getRemoteServer() {
         return server;
     }
 
-    @Override
+    
     public String getName() {
         return name;
     }
 
-    @Override
+    
     public void getDifficulty(final Callback<Difficulty> cb) {
         TypeMap args = new TypeMap();
         args.put("world", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(Utils.valueOf(Difficulty.class, m.getString("result")));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "world", "getDifficulty", args);
     }
 
-    @Override
+    
     public void getEnvironment(final Callback<Environment> cb) {
         TypeMap args = new TypeMap();
         args.put("world", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(Utils.valueOf(Environment.class, m.getString("result")));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "world", "getEnvironment", args);
     }
 
-    @Override
+    
     public void getFullTime(final Callback<Long> cb) {
         TypeMap args = new TypeMap();
         args.put("world", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getLong("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "world", "getFullTime", args);
     }
 
-    @Override
+    
     public void getSeed(final Callback<Long> cb) {
         TypeMap args = new TypeMap();
         args.put("world", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getLong("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }
         }, "world", "getSeed", args);
     }
 
-    @Override
+    
     public void getTime(final Callback<Long> cb) {
         TypeMap args = new TypeMap();
         args.put("world", name);
         server.sendAPIRequest(new APICallback<TypeMap>() {
-            @Override
+            
             public void onSuccess(TypeMap m) {
                 if (cb != null) cb.onSuccess(m.getLong("result"));
             }
-            @Override
+            
             public void onFailure(RemoteException re) {
                 if (cb != null) cb.onFailure(re);
             }

@@ -271,7 +271,7 @@ public final class Permissions {
 
     // can't check player's IP because it might not be what it is on the sending side due to NAT
     public static void connect(String playerName) throws PermissionsException {
-        if (Global.plugin.getServer().getOnlinePlayers().length >= Global.plugin.getServer().getMaxPlayers())
+        if (Global.plugin.getServer().getOnlinePlayers().size() >= Global.plugin.getServer().getMaxPlayers())
             throw new PermissionsException("maximim players already connected");
         for (OfflinePlayer p : Global.plugin.getServer().getWhitelistedPlayers())
             if (p.getName().equalsIgnoreCase(playerName)) return;

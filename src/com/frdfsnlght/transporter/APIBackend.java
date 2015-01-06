@@ -42,11 +42,9 @@ public final class APIBackend {
         OPTIONS.add("timeout");
 
         options = new Options(APIBackend.class, OPTIONS, "trp.api", new OptionsListener() {
-            @Override
             public void onOptionSet(Context ctx, String name, String value) {
                 ctx.sendLog("API option '%s' set to '%s'", name, value);
             }
-            @Override
             public String getOptionPermission(Context ctx, String name) {
                 return name;
             }

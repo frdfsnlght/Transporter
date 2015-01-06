@@ -78,20 +78,18 @@ public final class GlobalCommands extends TrpCommandProcessor {
         if ("list".startsWith(subCmd)) {
             Permissions.require(ctx.getPlayer(), "trp.list");
             List<Player> localPlayers = new ArrayList<Player>();
-            Collections.addAll(localPlayers, Global.plugin.getServer().getOnlinePlayers());
+            Collections.addAll(localPlayers, (Player[])Global.plugin.getServer().getOnlinePlayers().toArray());
             List<RemotePlayerImpl> remotePlayers = new ArrayList(Global.plugin.getAPI().getRemotePlayers());
 
             if (localPlayers.isEmpty() && remotePlayers.isEmpty())
                 ctx.send("there are no players");
             else {
                 Collections.sort(localPlayers, new Comparator<Player>() {
-                    @Override
                     public int compare(Player a, Player b) {
                         return a.getName().compareToIgnoreCase(b.getName());
                     }
                 });
                 Collections.sort(remotePlayers, new Comparator<RemotePlayerImpl>() {
-                    @Override
                     public int compare(RemotePlayerImpl a, RemotePlayerImpl b) {
                         int res = a.getRemoteServer().getName().compareToIgnoreCase(b.getRemoteServer().getName());
                         if (res == 0)

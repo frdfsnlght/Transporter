@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -128,7 +129,7 @@ public final class Chat {
     }
 
     public static void receive(Server fromServer, RemotePlayerImpl player, String message, List<String> toGates) {
-        Player[] players = Global.plugin.getServer().getOnlinePlayers();
+        Player[] players = (Player[]) Global.plugin.getServer().getOnlinePlayers().toArray();
 
         Set<Player> playersToReceive = new HashSet<Player>();
         if ((toGates == null) && fromServer.canReceiveChat(message))
