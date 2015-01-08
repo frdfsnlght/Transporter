@@ -571,7 +571,7 @@ public class Utils {
             writer.println();
 
             // list of players...
-            List<Player> players = Arrays.asList((Player[])Global.plugin.getServer().getOnlinePlayers().toArray());
+            List<Player> players = Arrays.asList(Global.plugin.getServer().getOnlinePlayers().toArray(new Player[0]));
             Collections.sort(players, new Comparator<Player>() {
                 
                 public int compare(Player a, Player b) {
